@@ -1,0 +1,22 @@
+{
+  "name": "smoongroad",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "상명대학교 서울캠퍼스 전공 탐색 및 대학생활 로드맵 서비스",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "check": "node --check server.js && node --check db.js && node -e \"new Function(require('fs').readFileSync('public/app.js','utf8'))\""
+  },
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.6.0",
+    "helmet": "^8.3.0",
+    "pg": "^8.22.0"
+  }
+}
