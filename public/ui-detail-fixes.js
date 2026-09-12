@@ -14,6 +14,7 @@
         word-break:keep-all
       }
       .ai-purpose-note b{color:#174ab9}
+      .ai-fallback-note{margin-top:8px;color:#6a7890;font-size:11px;line-height:1.55}
       @media(min-width:901px){
         .brand-node.local{right:-5%!important;top:47%!important}
       }
@@ -84,6 +85,60 @@
     }
   }
 
+  function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, char => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[char]);
+  }
+
+  function showTeamMatchFallback(result) {
+    const major = $('#applyMajor')?.value.trim() || '입력한 전공';
+    const role = $('#applyRole')?.value || '프로젝트 공동 역할';
+    const strengths = $('#applyStrengths')?.value.trim();
+    const interest = $('#applyInterest')?.value.trim();
+    const project = $('#applyTitle')?.textContent.trim() || '이 프로젝트';
+    const reasonBits = [
+      `${major}의 전공 역량을 프로젝트에 활용할 수 있습니다.`,
+      strengths ? `${strengths} 강점을 실제 공동 제작 과정에 연결할 수 있습니다.` : '팀원과 역할을 나누며 필요한 역량을 보완할 수 있습니다.',
+      interest ? `${interest}에 대한 관심을 지역 참여자와의 협업에 활용할 수 있습니다.` : '지역 참여자의 경험과 학생의 전공 역량을 함께 활용하는 방식이 적합합니다.'
+    ];
+
+    result.hidden = false;
+    result.innerHTML = `
+      <div class="scoreline"><span>기본 역할 추천</span><strong>추천</strong></div>
+      <h4>${escapeHtml(project)}에서 ${escapeHtml(role)} 역할로 참여해보세요.</h4>
+      <p><b>추천 역할:</b> ${escapeHtml(role)} · <b>팀 형태:</b> 다른 전공과 협업 가능한 공동팀</p>
+      <ul>${reasonBits.map(reason => `<li>${escapeHtml(reason)}</li>`).join('')}</ul>
+      <p><b>다음 단계:</b> 추천 내용을 참고해 최종 참여 여부와 역할은 직접 선택하세요.</p>
+      <p class="ai-fallback-note">Gemini 연결이 일시적으로 불안정해 기본 추천으로 전환했습니다. 연결이 정상화되면 같은 버튼에서 실제 AI 분석 결과를 확인할 수 있습니다.</p>`;
+  }
+
+  function recoverTeamMatchError() {
+    const result = $('#aiMatchResult');
+    const button = $('#aiMatchBtn');
+    if (!result || result.hidden || !button) return;
+
+    const text = result.textContent || '';
+    const upstreamError = /AI_UPSTREAM_ERROR|AI_TIMEOUT|AI_EMPTY_RESPONSE|AI_INVALID_RESPONSE/.test(text);
+    if (!upstreamError) {
+      if (/Gemini AI 팀 매칭|추천 결과/.test(text)) button.dataset.smulinkRetry = '0';
+      return;
+    }
+
+    const retryCount = Number(button.dataset.smulinkRetry || '0');
+    if (retryCount < 1 && !button.disabled) {
+      button.dataset.smulinkRetry = '1';
+      result.innerHTML = '<h4>AI 연결을 한 번 더 확인하고 있어요</h4><p>잠시만 기다려 주세요.</p>';
+      window.setTimeout(() => {
+        if (!button.disabled) button.click();
+      }, 900);
+      return;
+    }
+
+    showTeamMatchFallback(result);
+    button.dataset.smulinkRetry = '0';
+  }
+
   function refineFooterCopy() {
     const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
     while (walker.nextNode()) {
@@ -103,6 +158,7 @@
     ensureAiPurposeNote();
     refineProjectHeading();
     replaceVisibleCopy();
+    recoverTeamMatchError();
     refineFooterCopy();
   }
 
@@ -122,6 +178,7 @@
       ensureAiPurposeNote();
       refineProjectHeading();
       replaceVisibleCopy();
+      recoverTeamMatchError();
       refineFooterCopy();
     });
   });
