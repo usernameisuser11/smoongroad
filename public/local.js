@@ -19,5 +19,6 @@
     .then(() => loadScript('/workspace.js?v=20260912-workspace-1'))
     .then(() => loadScript('/simple-flow.js?v=20260912-simple-1'))
     .then(() => loadScript('/simple-flow-compat.js?v=20260912-simple-compat-1'))
+    .then(() => loadScript('/benchmark-ui.js?v=20260912-benchmark-1'))
     .catch(error => console.error('[SMU.Link loader]', error));
 })();
