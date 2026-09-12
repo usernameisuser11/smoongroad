@@ -8,9 +8,9 @@
     "node": ">=22"
   },
   "scripts": {
-    "start": "node safety-server.js",
-    "dev": "node --watch safety-server.js",
-    "check": "node --check safety-server.js && node --check server.js && node --check db.js && node -e \"new Function(require('fs').readFileSync('public/app.js','utf8'))\""
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "check": "node --check server.js && node --check db.js && node -e \"new Function(require('fs').readFileSync('public/app.js','utf8'))\" && node -e \"new Function(require('fs').readFileSync('public/local-core.js','utf8'))\" && node -e \"new Function(require('fs').readFileSync('public/reviews.js','utf8'))\" && node -e \"new Function(require('fs').readFileSync('public/safety.js','utf8'))\" && node -e \"new Function(require('fs').readFileSync('public/copy-edit.js','utf8'))\""
   },
   "dependencies": {
     "dotenv": "^16.6.1",
