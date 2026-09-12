@@ -19,7 +19,7 @@
       body[data-active-view="home"] .hero{display:grid!important}
       body[data-active-view="home"] #homeQuickStart{display:block!important}
       .brand-hero-art{overflow:visible!important;max-width:100%!important}
-      .brand-hero-icon{object-fit:contain!important}
+      .brand-hero-icon,.brand-icon{object-fit:contain!important}
       @media(max-width:900px){.brand-hero-art{overflow:hidden!important}}
     `;
     document.head.appendChild(style);
@@ -52,11 +52,15 @@
     window.scrollTo({top:0,left:0,behavior:'auto'});
   }
 
-  function replaceHeroIcon() {
-    const heroIcon = $('.brand-hero-icon');
-    if (!heroIcon) return;
-    heroIcon.src = '/smulink-symbol.svg?v=20260912-symbol-2';
-    heroIcon.alt = 'SMU.Link 앱 아이콘';
+  function refreshBrandIcons() {
+    $$('.brand-icon').forEach(icon => {
+      icon.src = '/smulink-icon.svg?v=20260912-safe-spacing-1';
+      icon.alt = 'SMU.Link 앱 아이콘';
+    });
+    $$('.brand-hero-icon').forEach(icon => {
+      icon.src = '/smulink-symbol.svg?v=20260912-safe-spacing-1';
+      icon.alt = 'SMU.Link 앱 아이콘';
+    });
   }
 
   function bindNavigation() {
@@ -84,7 +88,7 @@
 
   function init() {
     addStyles();
-    replaceHeroIcon();
+    refreshBrandIcons();
     bindNavigation();
     const hashView = location.hash.replace('#','');
     showDirect(validViews.has(hashView) ? hashView : 'home');
