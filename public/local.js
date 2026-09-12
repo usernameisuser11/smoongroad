@@ -13,6 +13,6 @@
   loadScript('/local-core.js?v=20260912-ai-1')
     .then(() => loadScript('/reviews.js?v=20260912-reviews-2'))
     .then(() => loadScript('/safety.js?v=20260912-safety-mock-2'))
-    .then(() => loadScript('/copy-edit.js?v=20260912-copy-2'))
+    .then(() => loadScript('/copy-edit.js?v=20260912-copy-3'))
     .catch(error => console.error('[SMU.Link loader]', error));
 })();
