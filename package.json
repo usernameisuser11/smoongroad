@@ -8,9 +8,9 @@
     "node": ">=22"
   },
   "scripts": {
-    "start": "node server.js",
-    "dev": "node --watch server.js",
-    "check": "node --check server.js && node --check db.js && node -e \"new Function(require('fs').readFileSync('public/app.js','utf8'))\" && node -e \"new Function(require('fs').readFileSync('public/local-core.js','utf8'))\" && node -e \"new Function(require('fs').readFileSync('public/reviews.js','utf8'))\" && node -e \"new Function(require('fs').readFileSync('public/safety.js','utf8'))\" && node -e \"new Function(require('fs').readFileSync('public/copy-edit.js','utf8'))\""
+    "start": "node --import ./gemini-retry-hook.js server.js",
+    "dev": "node --import ./gemini-retry-hook.js --watch server.js",
+    "check": "node --check gemini-retry-hook.js && node --check server.js && node --check db.js && node -e \"new Function(require('fs').readFileSync('public/app.js','utf8'))\" && node -e \"new Function(require('fs').readFileSync('public/local-core.js','utf8'))\" && node -e \"new Function(require('fs').readFileSync('public/reviews.js','utf8'))\" && node -e \"new Function(require('fs').readFileSync('public/safety.js','utf8'))\" && node -e \"new Function(require('fs').readFileSync('public/copy-edit.js','utf8'))\" && node -e \"new Function(require('fs').readFileSync('public/ui-detail-fixes.js','utf8'))\""
   },
   "dependencies": {
     "dotenv": "^16.6.1",
