@@ -32,5 +32,6 @@
     .then(() => loadScript('/simple-flow-compat.js?v=20260912-simple-compat-1'))
     .then(() => loadScript('/benchmark-ui.js?v=20260912-benchmark-1'))
     .then(() => loadStyle('/reference-design.css?v=20260912-reference-1'))
+    .then(() => loadScript('/brand-clean.js?v=20260912-brand-clean-1'))
     .catch(error => console.error('[SMU.Link loader]', error));
 })();
