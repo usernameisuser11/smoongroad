@@ -97,7 +97,7 @@
     .then(() => loadScript('/brand-clean.js?v=20260912-brand-clean-1'))
     .then(() => loadScript('/navigation-fix.js?v=20260912-nav-fix-4'))
     .then(() => loadScript('/header-icon-fix.js?v=20260912-header-icon-4'))
-    .then(() => loadScript('/ui-detail-fixes.js?v=20260913-ai-recovery-2'))
+    .then(() => loadScript('/ui-detail-fixes.js?v=20260913-gemini-resilience-1'))
     .then(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))))
     .then(() => {
       clearTimeout(emergencyReveal);
