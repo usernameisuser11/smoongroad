@@ -1,6 +1,13 @@
 (() => {
+  const PREBOOT_CLASS = 'smulink-preboot';
+  const PREBOOT_STYLE_ID = 'smulinkPreBootStyle';
   const BOOT_CLASS = 'smulink-ui-loading';
   const BOOT_ID = 'smulinkBootScreen';
+
+  function releasePreboot() {
+    document.documentElement.classList.remove(PREBOOT_CLASS);
+    document.getElementById(PREBOOT_STYLE_ID)?.remove();
+  }
 
   function startBootScreen() {
     document.documentElement.classList.add(BOOT_CLASS);
@@ -35,9 +42,14 @@
       </div>
       <div class="boot-line" aria-hidden="true"></div>`;
     document.body.appendChild(screen);
+
+    // local.html의 head 단계에서 구 UI를 숨기고 있다가,
+    // 부트 화면을 만든 같은 실행 프레임에서 교체해 중간 UI가 보이지 않게 한다.
+    releasePreboot();
   }
 
   function finishBootScreen() {
+    releasePreboot();
     const screen = document.getElementById(BOOT_ID);
     document.documentElement.classList.remove(BOOT_CLASS);
     if (!screen) return;
