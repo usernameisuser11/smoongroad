@@ -11,7 +11,7 @@
     const nodes = [];
     while (walker.nextNode()) nodes.push(walker.currentNode);
     for (const node of nodes) {
-      let value = node.nodeValue || '';
+      const value = node.nodeValue || '';
       let next = value;
       for (const [pattern, replacement] of replacements) next = next.replace(pattern, replacement);
       if (next !== value) node.nodeValue = next;
@@ -47,21 +47,25 @@
     document.head.appendChild(style);
   }
 
+  function setTextIfChanged(element, value) {
+    if (element && element.textContent !== value) element.textContent = value;
+  }
+
+  function setHtmlIfChanged(element, value) {
+    if (element && element.innerHTML !== value) element.innerHTML = value;
+  }
+
   function refineCopy() {
     const systemHead = document.querySelector('#system .section-head');
     if (systemHead) {
-      const title = systemHead.querySelector('h2');
-      const copy = systemHead.querySelector('p');
-      if (title) title.textContent = '교류의 목적은 “만남”보다 “함께 해보는 것”입니다';
-      if (copy) copy.textContent = '공통의 목표와 공동의 결과물이 있을 때, 서로의 역할이 생기고 다음 만남의 이유도 자연스럽게 이어집니다.';
+      setTextIfChanged(systemHead.querySelector('h2'), '교류의 목적은 “만남”보다 “함께 해보는 것”입니다');
+      setTextIfChanged(systemHead.querySelector('p'), '공통의 목표와 공동의 결과물이 있을 때, 서로의 역할이 생기고 다음 만남의 이유도 자연스럽게 이어집니다.');
     }
 
     const safetyHead = document.querySelector('#safety .section-head');
     if (safetyHead) {
-      const title = safetyHead.querySelector('h2');
-      const copy = safetyHead.querySelector('p');
-      if (title) title.innerHTML = '누가 참여하는지 확인하고,<br>문제 상황은 내부적으로 관리합니다';
-      if (copy) copy.innerHTML = '공개 블랙리스트 대신 역할별 인증 상태와 관리자 제재 상태를 사용합니다.<br>신고만으로 자동 차단하지 않고, 검토 후 제한합니다.';
+      setHtmlIfChanged(safetyHead.querySelector('h2'), '누가 참여하는지 확인하고,<br>문제 상황은 내부적으로 관리합니다');
+      setHtmlIfChanged(safetyHead.querySelector('p'), '공개 블랙리스트 대신 역할별 인증 상태와 관리자 제재 상태를 사용합니다.<br>신고만으로 자동 차단하지 않고, 검토 후 제한합니다.');
     }
 
     replaceEnglishJongno(document.body);
