@@ -33,6 +33,6 @@
     .then(() => loadScript('/benchmark-ui.js?v=20260912-benchmark-1'))
     .then(() => loadStyle('/reference-design.css?v=20260912-reference-1'))
     .then(() => loadScript('/brand-clean.js?v=20260912-brand-clean-1'))
-    .then(() => loadScript('/navigation-fix.js?v=20260912-nav-fix-1'))
+    .then(() => loadScript('/navigation-fix.js?v=20260912-nav-fix-2'))
     .catch(error => console.error('[SMU.Link loader]', error));
 })();
