@@ -22,3 +22,7 @@ services:
         value: gemini-3.8-flash
       - key: AI_TIMEOUT_MS
         value: 20000
+      - key: ADMIN_EMAILS
+        sync: false
+      - key: INTERNAL_APP_PORT
+        value: 10001
