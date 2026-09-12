@@ -63,6 +63,7 @@
     const section = sectionByLabel('PARTNERSHIP');
     if (!section) return;
     const head = section.querySelector('.section-head');
+    setTextIfChanged(head?.querySelector('span'), 'PARTICIPATION STRUCTURE');
     setTextIfChanged(head?.querySelector('h2'), '여러 주체가 각자의 역할로 공동 프로젝트를 지원합니다');
     setTextIfChanged(head?.querySelector('p'), '아래는 해커톤에서 제안하는 운영 구조입니다. 실제 협약이나 참여가 확정된 기관을 의미하지 않습니다.');
 
@@ -123,6 +124,16 @@
     });
   }
 
+  function refineClosing() {
+    const cta = document.querySelector('.cta');
+    if (cta) {
+      setTextIfChanged(cta.querySelector('h2'), '같은 지역의 다른 세대를, 하나의 프로젝트로.');
+      setTextIfChanged(cta.querySelector('p'), '학생의 전공과 주민의 경험을 연결해 함께 만들고, 지역에 결과를 남깁니다.');
+    }
+    const footer = document.querySelector('footer .footer-row');
+    if (footer) setHtmlIfChanged(footer, '<div><b>SMU.Link</b><br>상명대학교 서울캠퍼스 기반 · 종로구 세대 공동 프로젝트 제안</div><div>Hackathon Prototype · 2026</div>');
+  }
+
   function refineCopy() {
     const systemHead = document.querySelector('#system .section-head');
     if (systemHead) {
@@ -138,6 +149,7 @@
 
     refinePartnership();
     refineSupportSection();
+    refineClosing();
     replaceEnglishJongno(document.body);
   }
 
