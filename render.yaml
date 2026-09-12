@@ -20,5 +20,13 @@ services:
         sync: false
       - key: GEMINI_MODEL
         value: gemini-3.8-flash
+      - key: GEMINI_FALLBACK_MODEL
+        value: gemini-3.7-flash
+      - key: AI_PRIMARY_RETRIES
+        value: 1
+      - key: AI_RETRY_BASE_MS
+        value: 700
+      - key: GEMINI_ATTEMPT_TIMEOUT_MS
+        value: 8000
       - key: AI_TIMEOUT_MS
-        value: 20000
+        value: 30000
