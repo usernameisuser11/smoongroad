@@ -15,6 +15,6 @@
     .then(() => loadScript('/safety-v2.js?v=20260912-safety-3'))
     .then(() => loadScript('/copy-edit.js?v=20260912-copy-3'))
     .then(() => loadScript('/ux-polish.js?v=20260912-ux-1'))
-    .then(() => loadScript('/final-audit.js?v=20260912-audit-1'))
+    .then(() => loadScript('/final-audit.js?v=20260912-audit-2'))
     .catch(error => console.error('[SMU.Link loader]', error));
 })();
