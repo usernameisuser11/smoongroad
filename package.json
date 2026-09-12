@@ -3,14 +3,15 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "상명대학교 서울캠퍼스 전공 탐색 및 대학생활 로드맵 서비스",
+  "description": "SMU.Link · 상명대학교 서울캠퍼스 × 종로 지역 공동제작 플랫폼",
   "engines": {
     "node": ">=22"
   },
   "scripts": {
-    "start": "node --import ./gemini-retry-hook.js server.js",
-    "dev": "node --import ./gemini-retry-hook.js --watch server.js",
-    "check": "node --check gemini-retry-hook.js && node --check server.js && node --check db.js && node -e \"new Function(require('fs').readFileSync('public/app.js','utf8'))\" && node -e \"new Function(require('fs').readFileSync('public/local-core.js','utf8'))\" && node -e \"new Function(require('fs').readFileSync('public/reviews.js','utf8'))\" && node -e \"new Function(require('fs').readFileSync('public/safety.js','utf8'))\" && node -e \"new Function(require('fs').readFileSync('public/copy-edit.js','utf8'))\" && node -e \"new Function(require('fs').readFileSync('public/ui-detail-fixes.js','utf8'))\""
+    "start": "node runtime-stabilize.js && node --import ./gemini-retry-hook.js server.js",
+    "dev": "node runtime-stabilize.js && node --import ./gemini-retry-hook.js --watch server.js",
+    "check": "node --check runtime-stabilize.js && node --check gemini-retry-hook.js && node --check server.js && node --check db.js && node -e \"new Function(require('fs').readFileSync('public/app.js','utf8'))\" && node -e \"new Function(require('fs').readFileSync('public/local-core.js','utf8'))\" && node -e \"new Function(require('fs').readFileSync('public/reviews.js','utf8'))\" && node -e \"new Function(require('fs').readFileSync('public/safety.js','utf8'))\" && node -e \"new Function(require('fs').readFileSync('public/copy-edit.js','utf8'))\" && node -e \"new Function(require('fs').readFileSync('public/ui-detail-fixes.js','utf8'))\"",
+    "stabilize": "node runtime-stabilize.js"
   },
   "dependencies": {
     "dotenv": "^16.6.1",
