@@ -1,5 +1,6 @@
 (() => {
   const STORAGE_KEY = 'smulink_reviews';
+  const PARTICIPATION_KEY = 'smulink_cocreation_apps';
   const fallbackProjects = [
     ['digital-guide', '세대 공동 디지털 생활가이드'],
     ['memory-map', '종로 세대 공동기억 지도'],
@@ -7,15 +8,243 @@
     ['local-shop-lab', '상인 × 학생 공동 실험실'],
     ['co-class', '세대 공동 클래스'],
   ];
-  const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
-  function getProjects(){try{if(typeof challenges!=='undefined'&&Array.isArray(challenges))return challenges.map(item=>[item.id,item.question]);}catch{}return fallbackProjects;}
-  function readReviews(){try{const value=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');return Array.isArray(value)?value:[];}catch{return[];}}
-  function writeReviews(reviews){localStorage.setItem(STORAGE_KEY,JSON.stringify(reviews.slice(0,100)));}
-  function addStyles(){if(document.getElementById('smulinkReviewStyles'))return;const style=document.createElement('style');style.id='smulinkReviewStyles';style.textContent=`
-    .review-wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:16px;align-items:start}.review-form,.review-board{background:#fff;border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:0 10px 34px rgba(20,40,70,.05)}.review-form h3,.review-board h3{margin:0 0 6px;font-size:20px;letter-spacing:-.04em}.review-form>p,.review-board>p{margin:0 0 17px;color:var(--muted);font-size:10px}.review-field{display:grid;gap:6px;margin-bottom:12px}.review-field label{font-size:9px;font-weight:950;color:#52657a}.review-field select,.review-field textarea{width:100%;border:1px solid var(--line);border-radius:12px;background:#f9fbfd;padding:11px;outline:0}.review-field textarea{min-height:72px;resize:vertical}.review-field select:focus,.review-field textarea:focus{border-color:var(--primary2);box-shadow:0 0 0 3px rgba(30,90,149,.09)}.review-row{display:grid;grid-template-columns:1fr 1fr;gap:9px}.review-consent{display:flex;align-items:flex-start;gap:8px;padding:11px;border-radius:13px;background:var(--surface2);font-size:9px;color:#53667a;margin:11px 0}.review-consent input{margin-top:2px}.review-submit{width:100%}.review-list{display:grid;gap:10px}.review-card{border:1px solid var(--line);border-radius:18px;padding:16px;background:linear-gradient(145deg,#fff,#f8fbfe)}.review-card-top{display:flex;justify-content:space-between;gap:12px;align-items:start}.review-card-top strong{font-size:12px}.review-card-top span{font-size:9px;color:var(--muted)}.review-stars{font-size:13px;letter-spacing:1px;color:#9a6819;font-weight:950}.review-card dl{margin:12px 0 0;display:grid;gap:8px}.review-card dt{font-size:8px;font-weight:950;color:var(--primary2);letter-spacing:.04em}.review-card dd{margin:2px 0 0;font-size:10px;color:#52657a}.review-empty{padding:36px 18px;text-align:center;background:var(--surface2);border-radius:18px;color:var(--muted);font-size:10px}.review-empty b{display:block;color:var(--text);font-size:13px;margin-bottom:4px}.review-count{display:inline-flex;margin-bottom:12px;padding:6px 9px;border-radius:999px;background:var(--green-soft);color:var(--green);font-size:9px;font-weight:950}@media(max-width:900px){.review-wrap{grid-template-columns:1fr}}@media(max-width:640px){.review-row{grid-template-columns:1fr}}`;
+
+  const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, ch => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;',
+  }[ch]));
+
+  function getProjects() {
+    try {
+      if (typeof challenges !== 'undefined' && Array.isArray(challenges)) {
+        return challenges.map(item => [item.id, item.question]);
+      }
+    } catch {}
+    return fallbackProjects;
+  }
+
+  function readJsonArray(key) {
+    try {
+      const value = JSON.parse(localStorage.getItem(key) || '[]');
+      return Array.isArray(value) ? value : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function readReviews() {
+    return readJsonArray(STORAGE_KEY);
+  }
+
+  function writeReviews(reviews) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(reviews.slice(0, 100)));
+  }
+
+  function getParticipatedProjects() {
+    const projectMap = new Map(getProjects());
+    const applications = readJsonArray(PARTICIPATION_KEY);
+    const seen = new Set();
+    const participated = [];
+
+    for (const application of applications) {
+      const challengeId = String(application?.challengeId || '').trim();
+      if (!challengeId || seen.has(challengeId)) continue;
+      const projectName = projectMap.get(challengeId) || application?.projectName || application?.challengeTitle;
+      if (!projectName) continue;
+      seen.add(challengeId);
+      participated.push([challengeId, projectName]);
+    }
+
+    return participated;
+  }
+
+  function addStyles() {
+    if (document.getElementById('smulinkReviewStyles')) return;
+    const style = document.createElement('style');
+    style.id = 'smulinkReviewStyles';
+    style.textContent = `
+      .review-wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:16px;align-items:start}
+      .review-form,.review-board{background:#fff;border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:0 10px 34px rgba(20,40,70,.05)}
+      .review-form h3,.review-board h3{margin:0 0 6px;font-size:20px;letter-spacing:-.04em;word-break:keep-all}
+      .review-form>p,.review-board>p{margin:0 0 17px;color:var(--muted);font-size:10px;line-height:1.65;word-break:keep-all}
+      .review-field{display:grid;gap:6px;margin-bottom:12px}
+      .review-field label{font-size:9px;font-weight:950;color:#52657a}
+      .review-field select,.review-field textarea{width:100%;border:1px solid var(--line);border-radius:12px;background:#f9fbfd;padding:11px;outline:0}
+      .review-field textarea{min-height:72px;resize:vertical}
+      .review-field select:focus,.review-field textarea:focus{border-color:var(--primary2);box-shadow:0 0 0 3px rgba(30,90,149,.09)}
+      .review-field select:disabled,.review-field textarea:disabled{opacity:.62;cursor:not-allowed;background:#f1f4f7}
+      .review-row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+      .review-consent{display:flex;align-items:flex-start;gap:8px;padding:11px;border-radius:13px;background:var(--surface2);font-size:9px;color:#53667a;margin:11px 0;line-height:1.55}
+      .review-consent input{margin-top:2px}
+      .review-submit{width:100%}
+      .review-submit:disabled{opacity:.48;cursor:not-allowed}
+      .review-participation-note{margin:-2px 0 14px;padding:11px 12px;border-radius:13px;background:#f5f8fb;border:1px solid var(--line);font-size:9px;line-height:1.6;color:#53667a;word-break:keep-all}
+      .review-participation-note strong{color:var(--text)}
+      .review-list{display:grid;gap:10px}
+      .review-card{border:1px solid var(--line);border-radius:18px;padding:16px;background:linear-gradient(145deg,#fff,#f8fbfe)}
+      .review-card-top{display:flex;justify-content:space-between;gap:12px;align-items:start}
+      .review-card-top strong{font-size:12px}
+      .review-card-top span{font-size:9px;color:var(--muted)}
+      .review-stars{font-size:13px;letter-spacing:1px;color:#9a6819;font-weight:950}
+      .review-card dl{margin:12px 0 0;display:grid;gap:8px}
+      .review-card dt{font-size:8px;font-weight:950;color:var(--primary2);letter-spacing:.04em}
+      .review-card dd{margin:2px 0 0;font-size:10px;color:#52657a;line-height:1.55;word-break:keep-all}
+      .review-empty{padding:36px 18px;text-align:center;background:var(--surface2);border-radius:18px;color:var(--muted);font-size:10px;line-height:1.6}
+      .review-empty b{display:block;color:var(--text);font-size:13px;margin-bottom:4px}
+      .review-count{display:inline-flex;margin-bottom:12px;padding:6px 9px;border-radius:999px;background:var(--green-soft);color:var(--green);font-size:9px;font-weight:950}
+      @media(max-width:900px){.review-wrap{grid-template-columns:1fr}}
+      @media(max-width:640px){.review-row{grid-template-columns:1fr}}
+    `;
     document.head.appendChild(style);
   }
-  function renderReviews(){const list=document.getElementById('reviewList'),count=document.getElementById('reviewCount');if(!list)return;const publicReviews=readReviews().filter(item=>item.isPublic).sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));if(count)count.textContent=`공개 후기 ${publicReviews.length}개`;if(!publicReviews.length){list.innerHTML='<div class="review-empty"><b>아직 공개된 후기가 없어요.</b>프로젝트가 끝난 뒤 첫 후기를 남겨보세요.</div>';return;}list.innerHTML=publicReviews.map(item=>{const date=item.createdAt?new Date(item.createdAt).toLocaleDateString('ko-KR'):'';const rating=Math.max(1,Math.min(5,Number(item.rating)||5));const stars='★'.repeat(rating)+'☆'.repeat(5-rating);return `<article class="review-card"><div class="review-card-top"><div><strong>${escapeHtml(item.projectName)}</strong><br><span>${escapeHtml(item.role)} · ${escapeHtml(date)}</span></div><div class="review-stars" aria-label="만족도 ${rating}점">${stars}</div></div><dl><div><dt>같이 하면서 좋았던 점</dt><dd>${escapeHtml(item.goodPoint)}</dd></div><div><dt>상대 세대에 대해 새롭게 알게 된 점</dt><dd>${escapeHtml(item.learned)}</dd></div><div><dt>다음에 같이 해보고 싶은 것</dt><dd>${escapeHtml(item.nextIdea)}</dd></div></dl></article>`;}).join('');}
-  function injectReviews(){if(document.getElementById('reviews'))return;addStyles();const section=document.createElement('section');section.className='section shell';section.id='reviews';const options=getProjects().map(([id,name])=>`<option value="${escapeHtml(id)}">${escapeHtml(name)}</option>`).join('');section.innerHTML=`<div class="section-head"><span>PROJECT REVIEW</span><h2>프로젝트가 끝난 뒤, 서로 무엇을 배웠는지 남깁니다</h2><p>후기는 평가를 위한 점수보다 세대가 함께한 경험과 다음 만남의 힌트를 기록하는 데 목적이 있습니다.</p></div><div class="review-wrap"><form class="review-form" id="reviewForm"><h3>간단 후기 남기기</h3><p>프로젝트 참여자라면 학생·주민·상인·기관 누구나 남길 수 있습니다.</p><div class="review-field"><label for="reviewProject">참여한 프로젝트</label><select id="reviewProject" required>${options}</select></div><div class="review-row"><div class="review-field"><label for="reviewRole">나는 어떤 참여자였나요?</label><select id="reviewRole" required><option>학생</option><option>주민</option><option>상인</option><option>기관</option></select></div><div class="review-field"><label for="reviewRating">전체 만족도</label><select id="reviewRating" required><option value="5">5 · 매우 만족</option><option value="4">4 · 만족</option><option value="3">3 · 보통</option><option value="2">2 · 아쉬움</option><option value="1">1 · 많이 아쉬움</option></select></div></div><div class="review-field"><label for="reviewGood">같이 하면서 가장 좋았던 점</label><textarea id="reviewGood" maxlength="400" required placeholder="예: 주민과 학생이 처음부터 같이 장소를 정해서 실제 공동 프로젝트라는 느낌이 들었습니다."></textarea></div><div class="review-field"><label for="reviewLearned">상대 세대에 대해 새롭게 알게 된 점</label><textarea id="reviewLearned" maxlength="400" required placeholder="예: 지역에서 오래 살아온 분들이 가진 장소의 기억이 생각보다 훨씬 구체적이고 풍부했습니다."></textarea></div><div class="review-field"><label for="reviewNext">다음에 같이 해보고 싶은 것</label><textarea id="reviewNext" maxlength="400" required placeholder="예: 다음에는 다른 동네까지 세대 공동지도를 확장해보고 싶습니다."></textarea></div><label class="review-consent"><input type="checkbox" id="reviewPublic" checked><span>이 후기를 SMU.Link의 공개 후기 카드에 익명으로 표시하는 데 동의합니다. 체크를 해제하면 이 기기에는 저장되지만 공개 목록에는 표시하지 않습니다.</span></label><button class="btn primary review-submit" type="submit">후기 저장하기</button></form><section class="review-board" aria-live="polite"><h3>함께한 사람들의 후기</h3><p>공개에 동의한 후기만 표시됩니다.</p><span class="review-count" id="reviewCount">공개 후기 0개</span><div class="review-list" id="reviewList"></div></section></div>`;const cta=document.querySelector('.cta');if(cta)cta.before(section);else document.querySelector('main')?.appendChild(section);document.getElementById('reviewForm')?.addEventListener('submit',event=>{event.preventDefault();const projectSelect=document.getElementById('reviewProject');const selected=projectSelect.options[projectSelect.selectedIndex];const review={id:(globalThis.crypto?.randomUUID?.()||`review-${Date.now()}-${Math.random().toString(16).slice(2)}`),projectId:projectSelect.value,projectName:selected?.textContent||'SMU.Link 공동 프로젝트',role:document.getElementById('reviewRole').value,rating:Number(document.getElementById('reviewRating').value),goodPoint:document.getElementById('reviewGood').value.trim(),learned:document.getElementById('reviewLearned').value.trim(),nextIdea:document.getElementById('reviewNext').value.trim(),isPublic:document.getElementById('reviewPublic').checked,createdAt:new Date().toISOString()};if(!review.goodPoint||!review.learned||!review.nextIdea)return;const reviews=readReviews();reviews.push(review);writeReviews(reviews);event.currentTarget.reset();document.getElementById('reviewPublic').checked=true;document.getElementById('reviewRating').value='5';renderReviews();const toast=document.getElementById('savedToast');if(toast){toast.textContent=review.isPublic?'후기를 저장하고 공개 목록에 추가했습니다.':'후기를 비공개로 저장했습니다.';toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2200);}});renderReviews();}
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',injectReviews);else injectReviews();
+
+  function renderReviews() {
+    const list = document.getElementById('reviewList');
+    const count = document.getElementById('reviewCount');
+    if (!list) return;
+
+    const publicReviews = readReviews()
+      .filter(item => item.isPublic)
+      .sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
+
+    if (count) count.textContent = `공개 후기 ${publicReviews.length}개`;
+
+    if (!publicReviews.length) {
+      list.innerHTML = '<div class="review-empty"><b>아직 공개된 후기가 없어요.</b>프로젝트가 끝난 뒤 첫 후기를 남겨보세요.</div>';
+      return;
+    }
+
+    list.innerHTML = publicReviews.map(item => {
+      const date = item.createdAt ? new Date(item.createdAt).toLocaleDateString('ko-KR') : '';
+      const rating = Math.max(1, Math.min(5, Number(item.rating) || 5));
+      const stars = '★'.repeat(rating) + '☆'.repeat(5 - rating);
+      return `<article class="review-card"><div class="review-card-top"><div><strong>${escapeHtml(item.projectName)}</strong><br><span>${escapeHtml(item.role)} · ${escapeHtml(date)}</span></div><div class="review-stars" aria-label="만족도 ${rating}점">${stars}</div></div><dl><div><dt>같이 하면서 좋았던 점</dt><dd>${escapeHtml(item.goodPoint)}</dd></div><div><dt>상대 세대에 대해 새롭게 알게 된 점</dt><dd>${escapeHtml(item.learned)}</dd></div><div><dt>다음에 같이 해보고 싶은 것</dt><dd>${escapeHtml(item.nextIdea)}</dd></div></dl></article>`;
+    }).join('');
+  }
+
+  function setReviewFormAvailability(hasParticipatedProjects) {
+    const form = document.getElementById('reviewForm');
+    if (!form) return;
+    form.querySelectorAll('[data-review-input]').forEach(element => {
+      element.disabled = !hasParticipatedProjects;
+    });
+    const submit = form.querySelector('.review-submit');
+    if (submit) submit.disabled = !hasParticipatedProjects;
+  }
+
+  function injectReviews() {
+    if (document.getElementById('reviews')) return;
+    addStyles();
+
+    const participatedProjects = getParticipatedProjects();
+    const hasParticipatedProjects = participatedProjects.length > 0;
+    const options = hasParticipatedProjects
+      ? participatedProjects.map(([id, name]) => `<option value="${escapeHtml(id)}">${escapeHtml(name)}</option>`).join('')
+      : '<option value="">참여한 프로젝트가 없습니다</option>';
+
+    const participationNote = hasParticipatedProjects
+      ? '<div class="review-participation-note"><strong>내가 참여한 프로젝트만 표시됩니다.</strong> 참여 신청을 저장한 프로젝트 중에서 후기를 남길 프로젝트를 선택하세요.</div>'
+      : '<div class="review-participation-note"><strong>아직 참여한 프로젝트가 없습니다.</strong> 프로젝트에 먼저 참여한 뒤 후기를 남길 수 있습니다.</div>';
+
+    const section = document.createElement('section');
+    section.className = 'section shell';
+    section.id = 'reviews';
+    section.innerHTML = `
+      <div class="section-head">
+        <span>PROJECT REVIEW</span>
+        <h2>프로젝트가 끝난 뒤, 서로 무엇을 배웠는지 남깁니다</h2>
+        <p>후기는 평가를 위한 점수보다 세대가 함께한 경험과 다음 만남의 힌트를 기록하는 데 목적이 있습니다.</p>
+      </div>
+      <div class="review-wrap">
+        <form class="review-form" id="reviewForm">
+          <h3>간단 후기 남기기</h3>
+          <p>직접 참여한 프로젝트에 대해서만 후기를 남길 수 있습니다.</p>
+          <div class="review-field">
+            <label for="reviewProject">참여한 프로젝트</label>
+            <select id="reviewProject" data-review-input required>${options}</select>
+          </div>
+          ${participationNote}
+          <div class="review-row">
+            <div class="review-field">
+              <label for="reviewRole">나는 어떤 참여자였나요?</label>
+              <select id="reviewRole" data-review-input required><option>학생</option><option>주민</option><option>상인</option><option>기관</option></select>
+            </div>
+            <div class="review-field">
+              <label for="reviewRating">전체 만족도</label>
+              <select id="reviewRating" data-review-input required><option value="5">5 · 매우 만족</option><option value="4">4 · 만족</option><option value="3">3 · 보통</option><option value="2">2 · 아쉬움</option><option value="1">1 · 많이 아쉬움</option></select>
+            </div>
+          </div>
+          <div class="review-field">
+            <label for="reviewGood">같이 하면서 가장 좋았던 점</label>
+            <textarea id="reviewGood" data-review-input maxlength="400" required placeholder="예: 주민과 학생이 처음부터 같이 장소를 정해서 실제 공동 프로젝트라는 느낌이 들었습니다."></textarea>
+          </div>
+          <div class="review-field">
+            <label for="reviewLearned">상대 세대에 대해 새롭게 알게 된 점</label>
+            <textarea id="reviewLearned" data-review-input maxlength="400" required placeholder="예: 지역에서 오래 살아온 분들이 가진 장소의 기억이 생각보다 훨씬 구체적이고 풍부했습니다."></textarea>
+          </div>
+          <div class="review-field">
+            <label for="reviewNext">다음에 같이 해보고 싶은 것</label>
+            <textarea id="reviewNext" data-review-input maxlength="400" required placeholder="예: 다음에는 다른 동네까지 세대 공동지도를 확장해보고 싶습니다."></textarea>
+          </div>
+          <label class="review-consent"><input type="checkbox" id="reviewPublic" data-review-input checked><span>이 후기를 SMU.Link의 공개 후기 카드에 익명으로 표시하는 데 동의합니다. 체크를 해제하면 이 기기에는 저장되지만 공개 목록에는 표시하지 않습니다.</span></label>
+          <button class="btn primary review-submit" type="submit">후기 저장하기</button>
+        </form>
+        <section class="review-board" aria-live="polite">
+          <h3>함께한 사람들의 후기</h3>
+          <p>공개에 동의한 후기만 표시됩니다.</p>
+          <span class="review-count" id="reviewCount">공개 후기 0개</span>
+          <div class="review-list" id="reviewList"></div>
+        </section>
+      </div>`;
+
+    const cta = document.querySelector('.cta');
+    if (cta) cta.before(section);
+    else document.querySelector('main')?.appendChild(section);
+
+    setReviewFormAvailability(hasParticipatedProjects);
+
+    document.getElementById('reviewForm')?.addEventListener('submit', event => {
+      event.preventDefault();
+      if (!getParticipatedProjects().length) return;
+
+      const projectSelect = document.getElementById('reviewProject');
+      const selected = projectSelect.options[projectSelect.selectedIndex];
+      const validProjectIds = new Set(getParticipatedProjects().map(([id]) => id));
+      if (!validProjectIds.has(projectSelect.value)) return;
+
+      const review = {
+        id: globalThis.crypto?.randomUUID?.() || `review-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+        projectId: projectSelect.value,
+        projectName: selected?.textContent || 'SMU.Link 공동 프로젝트',
+        role: document.getElementById('reviewRole').value,
+        rating: Number(document.getElementById('reviewRating').value),
+        goodPoint: document.getElementById('reviewGood').value.trim(),
+        learned: document.getElementById('reviewLearned').value.trim(),
+        nextIdea: document.getElementById('reviewNext').value.trim(),
+        isPublic: document.getElementById('reviewPublic').checked,
+        createdAt: new Date().toISOString(),
+      };
+
+      if (!review.goodPoint || !review.learned || !review.nextIdea) return;
+
+      const reviews = readReviews();
+      reviews.push(review);
+      writeReviews(reviews);
+      event.currentTarget.reset();
+      document.getElementById('reviewPublic').checked = true;
+      document.getElementById('reviewRating').value = '5';
+      renderReviews();
+
+      const toast = document.getElementById('savedToast');
+      if (toast) {
+        toast.textContent = review.isPublic ? '후기를 저장하고 공개 목록에 추가했습니다.' : '후기를 비공개로 저장했습니다.';
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2200);
+      }
+    });
+
+    renderReviews();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', injectReviews);
+  else injectReviews();
 })();
