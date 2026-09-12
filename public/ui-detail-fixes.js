@@ -110,33 +110,16 @@
       <p><b>추천 역할:</b> ${escapeHtml(role)} · <b>팀 형태:</b> 다른 전공과 협업 가능한 공동팀</p>
       <ul>${reasonBits.map(reason => `<li>${escapeHtml(reason)}</li>`).join('')}</ul>
       <p><b>다음 단계:</b> 추천 내용을 참고해 최종 참여 여부와 역할은 직접 선택하세요.</p>
-      <p class="ai-fallback-note">Gemini 연결이 일시적으로 불안정해 기본 추천으로 전환했습니다. 연결이 정상화되면 같은 버튼에서 실제 AI 분석 결과를 확인할 수 있습니다.</p>`;
+      <p class="ai-fallback-note">Gemini 응답을 사용할 수 없어 기본 추천으로 전환했습니다. 연결이 정상화되면 같은 버튼에서 실제 AI 분석 결과를 확인할 수 있습니다.</p>`;
   }
 
   function recoverTeamMatchError() {
     const result = $('#aiMatchResult');
-    const button = $('#aiMatchBtn');
-    if (!result || result.hidden || !button) return;
+    if (!result || result.hidden) return;
 
     const text = result.textContent || '';
-    const upstreamError = /AI_UPSTREAM_ERROR|AI_TIMEOUT|AI_EMPTY_RESPONSE|AI_INVALID_RESPONSE/.test(text);
-    if (!upstreamError) {
-      if (/Gemini AI 팀 매칭|추천 결과/.test(text)) button.dataset.smulinkRetry = '0';
-      return;
-    }
-
-    const retryCount = Number(button.dataset.smulinkRetry || '0');
-    if (retryCount < 1 && !button.disabled) {
-      button.dataset.smulinkRetry = '1';
-      result.innerHTML = '<h4>AI 연결을 한 번 더 확인하고 있어요</h4><p>잠시만 기다려 주세요.</p>';
-      window.setTimeout(() => {
-        if (!button.disabled) button.click();
-      }, 900);
-      return;
-    }
-
-    showTeamMatchFallback(result);
-    button.dataset.smulinkRetry = '0';
+    const aiError = /AI_(?:UPSTREAM_ERROR|TIMEOUT|EMPTY_RESPONSE|INVALID_RESPONSE|RATE_LIMIT|SERVICE_UNAVAILABLE|SERVER_ERROR|NETWORK_ERROR|BAD_REQUEST|AUTH_ERROR|MODEL_NOT_FOUND)/.test(text);
+    if (aiError) showTeamMatchFallback(result);
   }
 
   function refineFooterCopy() {
