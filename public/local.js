@@ -17,5 +17,6 @@
     .then(() => loadScript('/ux-polish.js?v=20260912-ux-1'))
     .then(() => loadScript('/final-audit.js?v=20260912-audit-2'))
     .then(() => loadScript('/workspace.js?v=20260912-workspace-1'))
+    .then(() => loadScript('/simple-flow.js?v=20260912-simple-1'))
     .catch(error => console.error('[SMU.Link loader]', error));
 })();
