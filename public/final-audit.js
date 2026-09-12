@@ -35,6 +35,7 @@
     };
     $$('[data-filter]').forEach(button => { if (labels[button.dataset.filter]) text(button, labels[button.dataset.filter]); });
     $$('.challenge-statline span:first-child').forEach(el => text(el, '공동제작 원칙'));
+    text($('#dialogPriority'), '공동제작 원칙');
   }
 
   function refineMeta() {
@@ -55,7 +56,11 @@
   const observer = new MutationObserver(() => {
     if (queued) return;
     queued = true;
-    requestAnimationFrame(() => { queued = false; cleanLegacyVisibleText(); });
+    requestAnimationFrame(() => {
+      queued = false;
+      refineChallenges();
+      cleanLegacyVisibleText();
+    });
   });
   if (document.body) observer.observe(document.body, {childList:true,subtree:true,characterData:true});
 })();
