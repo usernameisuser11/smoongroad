@@ -11,7 +11,7 @@
   }
 
   loadScript('/local-core.js?v=20260912-ai-1')
-    .then(() => loadScript('/reviews.js?v=20260912-reviews-1'))
+    .then(() => loadScript('/reviews.js?v=20260912-reviews-2'))
     .then(() => loadScript('/safety.js?v=20260912-safety-1'))
     .then(() => loadScript('/copy-edit.js?v=20260912-copy-1'))
     .catch(error => console.error('[SMU.Link loader]', error));
