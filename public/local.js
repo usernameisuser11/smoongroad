@@ -153,13 +153,29 @@ function addDynamicStyles() {
   document.head.appendChild(style);
 }
 
+function rewriteBrand() {
+  document.title = 'SMU.Link | 상명대와 종로의 세대를 연결하다';
+  const meta = document.querySelector('meta[name="description"]');
+  if (meta) meta.setAttribute('content', 'SMU.Link는 상명대학교 학생과 종로구 주민이 전공·경험·지역의 기억을 연결해 함께 프로젝트를 만드는 세대 공동제작 플랫폼입니다.');
+  const mark = document.querySelector('.brand .mark');
+  const brandName = document.querySelector('.brand strong');
+  const brandSub = document.querySelector('.brand small');
+  const badge = document.querySelector('.local-badge');
+  if (mark) mark.textContent = 'SMU';
+  if (brandName) brandName.textContent = 'SMU.Link';
+  if (brandSub) brandSub.textContent = 'SANGMYUNG × JONGNO';
+  if (badge) badge.textContent = 'CO-CREATION';
+  const footer = document.querySelector('footer .footer-row');
+  if (footer) footer.innerHTML = '<div><b>SMU.Link</b><br>상명대학교 × 종로구 세대 공동 프로젝트 플랫폼</div><div>Hackathon Prototype · 2026</div>';
+}
+
 function rewriteHero() {
   const title = document.querySelector('.hero h1');
   if (title) title.innerHTML = '도와주는 세대교류가 아니라,<br><em>같이 만드는 세대교류</em>';
   const copy = document.querySelector('.hero-copy');
-  if (copy) copy.innerHTML = '<b>상명대 학생과 종로구 주민이 서로를 “도와주는 사람”과 “도움받는 사람”으로 나누지 않습니다.</b><br>같은 목표를 정하고, 각자 가진 전공·경험·생활지식을 합쳐 하나의 결과물을 함께 만드는 세대 공동 프로젝트 플랫폼입니다.';
+  if (copy) copy.innerHTML = '<b>SMU.Link는 상명대 학생과 종로구 주민을 “도와주는 사람”과 “도움받는 사람”으로 나누지 않습니다.</b><br>같은 목표를 정하고, 각자 가진 전공·경험·생활지식을 합쳐 하나의 결과물을 함께 만드는 세대 공동 프로젝트 플랫폼입니다.';
   const focus = document.querySelector('.problem-focus');
-  if (focus) focus.innerHTML = '<strong>RULE</strong><div><b>모든 프로젝트는 공동제작이 원칙입니다.</b><p>같이 정하기 → 같이 하기 → 같이 결과물 남기기. 세 단계 중 하나라도 빠지면 세대이음 프로젝트로 등록하지 않습니다.</p></div>';
+  if (focus) focus.innerHTML = '<strong>RULE</strong><div><b>모든 프로젝트는 공동제작이 원칙입니다.</b><p>같이 정하기 → 같이 하기 → 같이 결과물 남기기. 세 단계 중 하나라도 빠지면 SMU.Link 프로젝트로 등록하지 않습니다.</p></div>';
   const q = document.querySelector('.hero-question'); if (q) q.textContent = '서로 다른 세대가 같은 목표를 함께 완성한다면?';
   const rows = $$('.question-route .route-row');
   const copyRows = [
@@ -176,7 +192,7 @@ function rewriteHero() {
 function rewriteActivities() {
   const section = $('#activities'); if (!section) return;
   section.innerHTML = `
-    <div class="section-head"><span>CO-CREATION ACTIVITIES</span><h2>세대의 차이를 “서로 해주는 일”이 아니라 “같이 하는 일”로 바꿉니다</h2><p>활동의 핵심은 지식 전달이 아니라 공동 목표입니다. 주민과 학생이 함께 선택하고, 함께 움직이고, 함께 결과물을 남깁니다.</p></div>
+    <div class="section-head"><span>SMU.LINK CO-CREATION</span><h2>세대의 차이를 “서로 해주는 일”이 아니라 “같이 하는 일”로 바꿉니다</h2><p>활동의 핵심은 지식 전달이 아니라 공동 목표입니다. 주민과 학생이 함께 선택하고, 함께 움직이고, 함께 결과물을 남깁니다.</p></div>
     <div class="co-rule"><div><span>STEP 1</span><b>같이 정하기</b></div><div><span>STEP 2</span><b>같이 하기</b></div><div><span>STEP 3</span><b>같이 남기기</b></div></div>
     <div class="activity-grid" style="margin-top:16px">
       <article class="activity-card"><div class="activity-label">01 · DIGITAL</div><h3>세대 공동 디지털 생활가이드</h3><p>주민이 실제로 불편한 디지털 상황을 고르고 학생과 함께 쉬운 설명·화면을 설계하고 직접 테스트합니다.</p><div class="activity-result"><b>공동 결과물:</b> 종로 생활 디지털 가이드 + 주민·학생 사용성 테스트 기록</div></article>
@@ -190,7 +206,7 @@ function rewriteActivities() {
 function rewriteSystem() {
   const system = $('#system'); if (!system) return;
   const head = system.querySelector('.section-head');
-  if (head) head.innerHTML = '<span>WHY CO-CREATION</span><h2>교류의 목적은 “만나는 것”보다 “같이 해보는 것”</h2><p>대화나 일회성 체험만으로 끝나면 관계를 지속하기 어렵습니다. 공동 목표와 공동 결과물이 있으면 서로의 역할이 생기고 다음 만남의 이유도 만들어집니다.</p>';
+  if (head) head.innerHTML = '<span>WHY SMU.LINK</span><h2>교류의 목적은 “만나는 것”보다 “같이 해보는 것”</h2><p>대화나 일회성 체험만으로 끝나면 관계를 지속하기 어렵습니다. 공동 목표와 공동 결과물이 있으면 서로의 역할이 생기고 다음 만남의 이유도 만들어집니다.</p>';
   const cards = system.querySelectorAll('.premise article');
   const texts = [
     ['1','수혜자와 제공자로 나누지 않기','주민도 학생도 프로젝트의 공동 기획자이자 제작자입니다.'],
@@ -209,7 +225,7 @@ function rewriteSystem() {
 
 function rewriteChallengeHead() {
   const head = $('#challenges .section-head');
-  if (head) head.innerHTML = '<span>CO-CREATION CHALLENGE</span><h2>“누가 해줄 사람?”이 아니라 “누구와 같이 만들까?”</h2><p>모든 챌린지는 주민과 학생이 함께 결정해야 하는 단계와 공동 결과물을 포함합니다.</p>';
+  if (head) head.innerHTML = '<span>SMU.LINK CHALLENGE</span><h2>“누가 해줄 사람?”이 아니라 “누구와 같이 만들까?”</h2><p>모든 챌린지는 주민과 학생이 함께 결정해야 하는 단계와 공동 결과물을 포함합니다.</p>';
   const buttons = $$('#challenges [data-filter]');
   const labels = ['전체','디지털','지역기억','진로·경험']; buttons.forEach((b,i)=>{if(labels[i]) b.textContent=labels[i];});
 }
@@ -235,7 +251,7 @@ function ensureDialogExtra() {
 function openChallenge(id) {
   const item=challenges.find(x=>x.id===id); const dialog=$('#challengeDialog'); if(!item||!dialog) return;
   activeChallenge=item; ensureDialogExtra();
-  $('#dialogKicker').textContent='SMU × JONGNO CO-CREATION'; $('#dialogTitle').textContent=item.question; $('#dialogDesc').textContent=item.desc; $('#dialogOwner').textContent=item.owner; $('#dialogMajors').textContent=item.majors; $('#dialogMentor').textContent='학생·주민 공동 의사결정 + 필요 시 전문가 자문'; $('#dialogBenefit').textContent='공동 결과물 · 전공 프로젝트 · 지역 관계 기록';
+  $('#dialogKicker').textContent='SMU.LINK × JONGNO CO-CREATION'; $('#dialogTitle').textContent=item.question; $('#dialogDesc').textContent=item.desc; $('#dialogOwner').textContent=item.owner; $('#dialogMajors').textContent=item.majors; $('#dialogMentor').textContent='학생·주민 공동 의사결정 + 필요 시 전문가 자문'; $('#dialogBenefit').textContent='공동 결과물 · 전공 프로젝트 · 지역 관계 기록';
   $('#dialogPriority').textContent=`공동성 ${item.priority}`; $('#dialogDifficulty').textContent=item.difficulty; $('#dialogDuration').textContent=item.duration; $('#dialogTeam').textContent=item.team; $('#dialogMatch').textContent=item.matchMode; $('#dialogDeliverable').textContent=item.deliverable;
   $('#dialogTogether').innerHTML=item.together.map((x,i)=>`<div><i>${i+1}</i><b>${escapeHtml(x)}</b></div>`).join(''); dialog.showModal();
 }
@@ -254,7 +270,7 @@ function addMatchingFields() {
 function injectMajorView() {
   const challengesSection=$('#challenges'); if(!challengesSection||$('#major-view')) return;
   const section=document.createElement('section'); section.className='section shell'; section.id='major-view';
-  section.innerHTML='<div class="section-head"><span>HOW TO JOIN</span><h2>같은 학과끼리도, 단과대끼리도, 융합팀으로도</h2><p>학생은 자신의 전공과 참여 성향에 따라 프로젝트를 탐색하고, 원하는 사람·팀을 직접 고르거나 AI 추천을 받을 수 있습니다.</p></div><div class="major-view-wrap"><aside class="major-selector"><h3>전공으로 프로젝트 보기</h3><p>전공은 참여의 시작점일 뿐 제한 조건은 아닙니다.</p><div class="major-buttons" id="majorButtons"></div><span class="major-count" id="majorCount"></span></aside><div class="major-results"><h3 id="majorTitle">전체 공동 프로젝트</h3><p>같은 학과팀 / 단과대팀 / 융합팀 / 직접 선택 / AI 추천 모두 가능합니다.</p><div class="major-project-list" id="majorProjectList"></div></div></div>';
+  section.innerHTML='<div class="section-head"><span>HOW TO JOIN SMU.LINK</span><h2>같은 학과끼리도, 단과대끼리도, 융합팀으로도</h2><p>학생은 자신의 전공과 참여 성향에 따라 프로젝트를 탐색하고, 원하는 사람·팀을 직접 고르거나 AI 추천을 받을 수 있습니다.</p></div><div class="major-view-wrap"><aside class="major-selector"><h3>전공으로 프로젝트 보기</h3><p>전공은 참여의 시작점일 뿐 제한 조건은 아닙니다.</p><div class="major-buttons" id="majorButtons"></div><span class="major-count" id="majorCount"></span></aside><div class="major-results"><h3 id="majorTitle">전체 공동 프로젝트</h3><p>같은 학과팀 / 단과대팀 / 융합팀 / 직접 선택 / AI 추천 모두 가능합니다.</p><div class="major-project-list" id="majorProjectList"></div></div></div>';
   challengesSection.after(section);
   const fields=['전체','컴퓨터과학','디자인','경영','콘텐츠','교육·복지']; $('#majorButtons').innerHTML=fields.map(x=>`<button type="button" data-major="${escapeHtml(x)}" class="${x==='전체'?'active':''}">${escapeHtml(x)}</button>`).join('');
   $$('#majorButtons [data-major]').forEach(btn=>btn.addEventListener('click',()=>{activeMajor=btn.dataset.major; $$('#majorButtons [data-major]').forEach(x=>x.classList.toggle('active',x===btn)); renderMajorProjects();})); renderMajorProjects();
@@ -269,15 +285,15 @@ function renderMajorProjects() {
 
 function ensureApplyDialog() {
   if($('#applyDialog')) return; const dialog=document.createElement('dialog'); dialog.id='applyDialog'; dialog.className='apply-dialog';
-  dialog.innerHTML=`<form class="apply-inner" id="applyForm"><div class="apply-top"><div><small>JOIN CO-CREATION PROJECT</small><h2 id="applyTitle">공동 프로젝트 참여</h2></div><button type="button" id="applyClose">×</button></div><p id="applyCopy"></p><div class="apply-field"><label for="joinMode">어떻게 참여할까요?</label><select id="joinMode"><option>같은 학과 학생들과 팀으로</option><option>같은 단과대 학생들과 팀으로</option><option>다른 전공과 융합팀으로</option><option>참여자·팀을 직접 선택</option><option>AI에게 팀 추천받기</option></select></div><div class="apply-field"><label for="applyRole">내가 같이 맡고 싶은 역할</label><select id="applyRole"><option>기획·문제정의</option><option>개발·기술</option><option>디자인·콘텐츠</option><option>조사·인터뷰</option><option>운영·현장소통</option><option>기타</option></select></div><div class="apply-field"><label for="applyMotivation">같이 만들고 싶은 이유</label><textarea id="applyMotivation" required placeholder="예: 주민과 함께 실제 사용 가능한 지역지도를 만들고 싶습니다."></textarea></div><div class="apply-actions"><button class="btn" type="button" id="applyCancel">취소</button><button class="btn primary" type="submit">참여 신청 저장</button></div></form>`;
+  dialog.innerHTML=`<form class="apply-inner" id="applyForm"><div class="apply-top"><div><small>JOIN SMU.LINK PROJECT</small><h2 id="applyTitle">공동 프로젝트 참여</h2></div><button type="button" id="applyClose">×</button></div><p id="applyCopy"></p><div class="apply-field"><label for="joinMode">어떻게 참여할까요?</label><select id="joinMode"><option>같은 학과 학생들과 팀으로</option><option>같은 단과대 학생들과 팀으로</option><option>다른 전공과 융합팀으로</option><option>참여자·팀을 직접 선택</option><option>AI에게 팀 추천받기</option></select></div><div class="apply-field"><label for="applyRole">내가 같이 맡고 싶은 역할</label><select id="applyRole"><option>기획·문제정의</option><option>개발·기술</option><option>디자인·콘텐츠</option><option>조사·인터뷰</option><option>운영·현장소통</option><option>기타</option></select></div><div class="apply-field"><label for="applyMotivation">같이 만들고 싶은 이유</label><textarea id="applyMotivation" required placeholder="예: 주민과 함께 실제 사용 가능한 지역지도를 만들고 싶습니다."></textarea></div><div class="apply-actions"><button class="btn" type="button" id="applyCancel">취소</button><button class="btn primary" type="submit">참여 신청 저장</button></div></form>`;
   document.body.appendChild(dialog); $('#applyClose').addEventListener('click',()=>dialog.close()); $('#applyCancel').addEventListener('click',()=>dialog.close());
-  $('#applyForm').addEventListener('submit',e=>{e.preventDefault(); if(!activeChallenge)return; let arr=[]; try{arr=JSON.parse(localStorage.getItem('smoongroad_cocreation_apps')||'[]')}catch{}; if(!Array.isArray(arr))arr=[]; arr.push({challengeId:activeChallenge.id,joinMode:$('#joinMode').value,role:$('#applyRole').value,motivation:$('#applyMotivation').value.trim(),createdAt:new Date().toISOString()}); localStorage.setItem('smoongroad_cocreation_apps',JSON.stringify(arr)); dialog.close(); const toast=$('#savedToast'); if(toast){toast.textContent='공동 프로젝트 참여 신청을 저장했습니다.';toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2000);}});
+  $('#applyForm').addEventListener('submit',e=>{e.preventDefault(); if(!activeChallenge)return; let arr=[]; try{arr=JSON.parse(localStorage.getItem('smulink_cocreation_apps')||'[]')}catch{}; if(!Array.isArray(arr))arr=[]; arr.push({challengeId:activeChallenge.id,joinMode:$('#joinMode').value,role:$('#applyRole').value,motivation:$('#applyMotivation').value.trim(),createdAt:new Date().toISOString()}); localStorage.setItem('smulink_cocreation_apps',JSON.stringify(arr)); dialog.close(); const toast=$('#savedToast'); if(toast){toast.textContent='SMU.Link 공동 프로젝트 참여 신청을 저장했습니다.';toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2000);}});
 }
 
 function startApply(){if(!activeChallenge)return;ensureApplyDialog();$('#challengeDialog')?.close();$('#applyTitle').textContent=activeChallenge.question;$('#applyCopy').textContent=`${activeChallenge.owner} · ${activeChallenge.duration} · ${activeChallenge.matchMode}`;$('#applyMotivation').value='';$('#applyDialog').showModal();}
 
 function rewriteLab() {
-  const head=$('#lab .section-head'); if(head) head.innerHTML='<span>AI CO-MATCHING DEMO</span><h2>원하는 전공은 직접 고르고, 모르는 부분만 AI에게 맡깁니다</h2><p>공동 목표를 입력하고 매칭 방식을 선택하면 AI가 필요한 역할·전공·공동 활동을 제안합니다. AI는 추천만 하고 최종 팀 선택과 프로젝트 방향은 참여자가 결정합니다.</p>';
+  const head=$('#lab .section-head'); if(head) head.innerHTML='<span>SMU.LINK AI CO-MATCHING</span><h2>원하는 전공은 직접 고르고, 모르는 부분만 AI에게 맡깁니다</h2><p>공동 목표를 입력하고 매칭 방식을 선택하면 AI가 필요한 역할·전공·공동 활동을 제안합니다. AI는 추천만 하고 최종 팀 선택과 프로젝트 방향은 참여자가 결정합니다.</p>';
   const formP=$('#problemForm > p'); if(formP) formP.textContent='누가 누구를 도울지가 아니라 무엇을 같이 만들지 입력해 보세요.';
   const labels=$$('#problemForm .sample-row button'); const txt=['공동 디지털가이드','상인×학생 공동실험','세대 공동지도','공동 클래스']; labels.forEach((x,i)=>{if(txt[i])x.textContent=txt[i]});
   const titleLabel=$('label[for="title"]'); if(titleLabel) titleLabel.textContent='같이 만들고 싶은 프로젝트';
@@ -291,13 +307,13 @@ function renderAnalysis({title,detail,client,location,matchMode,preferredMajor})
   const type=pickType(`${title} ${detail}`); const data=archetypes[type];
   $('#emptyResult').hidden=true; $('#analysisResult').hidden=false; $('#resultTitle').textContent=title; $('#fitScore').textContent='96'; $('#tags').innerHTML=data.tags.map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join('');
   const modeText={direct:'학과 직접 지정',ai:'AI 전공 추천',hybrid:'지정 + AI 보완',open:'전공 무관 공개'}[matchMode]||'AI 전공 추천';
-  $('#summary').innerHTML=`<b>${escapeHtml(location)}</b>에서 진행할 <b>공동제작 프로젝트</b>로 분석했습니다. ${escapeHtml(data.summary)}<div class="match-mode-note"><b>${escapeHtml(modeText)}</b>${preferredMajor?` · 우선 고려: ${escapeHtml(preferredMajor)}`:''} · 최종 선택은 참여자가 결정합니다.</div>`;
+  $('#summary').innerHTML=`<b>${escapeHtml(location)}</b>에서 진행할 <b>SMU.Link 공동제작 프로젝트</b>로 분석했습니다. ${escapeHtml(data.summary)}<div class="match-mode-note"><b>${escapeHtml(modeText)}</b>${preferredMajor?` · 우선 고려: ${escapeHtml(preferredMajor)}`:''} · 최종 선택은 참여자가 결정합니다.</div>`;
   $('#majorGrid').innerHTML=data.majors.map(([m,r])=>`<article class="major-card"><span>추천 역할·전공</span><b>${escapeHtml(m)}</b><p>${escapeHtml(r)}</p></article>`).join(''); $('#projectList').innerHTML=data.projects.map(([c,p,m,d])=>`<article class="project"><span>${escapeHtml(c)}</span><div><b>${escapeHtml(p)}</b><small>${escapeHtml(m)} · ${escapeHtml(d)}</small></div><i>같이 진행</i></article>`).join('');
   $('#mentorText').textContent='필요 시 전문가 자문'; $('#volunteerText').textContent='주민·학생 공동 운영'; $('#ownerText').textContent=`${client} · 공동 의사결정`; $('#beforeText').textContent=data.before; $('#afterText').textContent=data.after; $('#portfolioTitle').textContent=title; $('#portfolioClient').textContent=`${location} · ${client} · ${modeText}`; $('#portfolioMajors').textContent=`추천 전공: ${data.majors.map(x=>x[0]).join(' + ')}`; $('#analysisResult').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 function init(){
-  addDynamicStyles(); rewriteHero(); rewriteActivities(); rewriteSystem(); rewriteChallengeHead(); rewriteLab(); addMatchingFields(); renderChallenges(); injectMajorView(); ensureDialogExtra(); ensureApplyDialog();
+  addDynamicStyles(); rewriteBrand(); rewriteHero(); rewriteActivities(); rewriteSystem(); rewriteChallengeHead(); rewriteLab(); addMatchingFields(); renderChallenges(); injectMajorView(); ensureDialogExtra(); ensureApplyDialog();
   $$('[data-filter]').forEach(btn=>btn.addEventListener('click',()=>{$$('[data-filter]').forEach(x=>x.classList.remove('active'));btn.classList.add('active');renderChallenges(btn.dataset.filter||'all');}));
   const samples={mobility:{location:'부암동',client:'종로구',title:'주민과 학생이 함께 종로 디지털 생활가이드를 만들 수 있을까?',detail:'주민이 실제로 어려운 앱과 키오스크 상황을 고르고 학생과 함께 쉬운 설명과 화면을 만들고 직접 테스트하고 싶다.'},shop:{location:'평창동',client:'지역상인 협의체',title:'오래된 가게 상인과 학생이 함께 새로운 가게 경험을 실험할 수 있을까?',detail:'상인과 학생이 고객 불편 한 가지를 같이 고르고 가게 경험과 학생의 디자인·기술을 합쳐 개선안을 제작하고 손님 반응을 함께 보고 싶다.'},digital:{location:'부암동',client:'문화·지역기관',title:'주민과 학생이 함께 종로 세대 공동기억 지도를 만들 수 있을까?',detail:'주민과 학생이 동네를 같이 걸으며 기록할 장소를 고르고 옛 기억과 현재의 시선을 사진·음성·웹 지도에 함께 남기고 싶다.'},hill:{location:'홍지동',client:'상명대학교',title:'학생과 주민이 하나의 주제로 세대 공동 클래스를 열 수 있을까?',detail:'한쪽이 가르치는 수업이 아니라 두 세대가 주제를 같이 정하고 역할을 나눠 수업을 공동 운영하고 결과물까지 함께 만들고 싶다.'}};
   $$('[data-sample]').forEach(btn=>btn.addEventListener('click',()=>{const s=samples[btn.dataset.sample];if(!s)return;$('#location').value=s.location;$('#client').value=s.client;$('#title').value=s.title;$('#detail').value=s.detail;}));
