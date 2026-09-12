@@ -37,14 +37,12 @@
     screen.setAttribute('aria-label', 'SMU.Link 불러오는 중');
     screen.innerHTML = `
       <div class="boot-brand">
-        <img src="/smulink-icon.svg?v=20260912-icon-4" alt="" />
+        <img src="/smulink-icon.svg?v=20260912-larger-mark-1" alt="" />
         <strong>SMU.Link</strong>
       </div>
       <div class="boot-line" aria-hidden="true"></div>`;
     document.body.appendChild(screen);
 
-    // local.html의 head 단계에서 구 UI를 숨기고 있다가,
-    // 부트 화면을 만든 같은 실행 프레임에서 교체해 중간 UI가 보이지 않게 한다.
     releasePreboot();
   }
 
@@ -97,8 +95,8 @@
     .then(() => loadScript('/benchmark-ui.js?v=20260912-benchmark-1'))
     .then(() => loadStyle('/reference-design.css?v=20260912-reference-1'))
     .then(() => loadScript('/brand-clean.js?v=20260912-brand-clean-1'))
-    .then(() => loadScript('/navigation-fix.js?v=20260912-nav-fix-3'))
-    .then(() => loadScript('/header-icon-fix.js?v=20260912-header-icon-3'))
+    .then(() => loadScript('/navigation-fix.js?v=20260912-nav-fix-4'))
+    .then(() => loadScript('/header-icon-fix.js?v=20260912-header-icon-4'))
     .then(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))))
     .then(() => {
       clearTimeout(emergencyReveal);
