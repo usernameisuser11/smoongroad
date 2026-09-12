@@ -10,6 +10,17 @@
     });
   }
 
+  function loadStyle(href) {
+    return new Promise((resolve, reject) => {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = href;
+      link.onload = resolve;
+      link.onerror = () => reject(new Error(`Failed to load ${href}`));
+      document.head.appendChild(link);
+    });
+  }
+
   loadScript('/local-core.js?v=20260912-ai-1')
     .then(() => loadScript('/reviews-v3.js?v=20260912-reviews-3'))
     .then(() => loadScript('/safety-v2.js?v=20260912-safety-3'))
@@ -20,5 +31,6 @@
     .then(() => loadScript('/simple-flow.js?v=20260912-simple-1'))
     .then(() => loadScript('/simple-flow-compat.js?v=20260912-simple-compat-1'))
     .then(() => loadScript('/benchmark-ui.js?v=20260912-benchmark-1'))
+    .then(() => loadStyle('/reference-design.css?v=20260912-reference-1'))
     .catch(error => console.error('[SMU.Link loader]', error));
 })();
