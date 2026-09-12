@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">SMU.Link symbol</title>
+  <desc id="desc">Blue rounded square with the white SMU.Link connection symbol and blue and green accent dots.</desc>
+  <defs>
+    <linearGradient id="bg" x1="70" y1="30" x2="450" y2="500" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#114fd6"/>
+      <stop offset="0.48" stop-color="#0738b8"/>
+      <stop offset="1" stop-color="#071b70"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientTransform="translate(314 248) rotate(140) scale(230 180)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2f6fff" stop-opacity=".46"/>
+      <stop offset="1" stop-color="#2f6fff" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="9"/></filter>
+  </defs>
+  <rect x="12" y="12" width="488" height="488" rx="106" fill="url(#bg)"/>
+  <ellipse cx="305" cy="257" rx="156" ry="118" fill="url(#glow)"/>
+  <g transform="translate(0 28)">
+    <path d="M318 105 171 190c-28 16-29 54-2 70l77 45" fill="none" stroke="#fff" stroke-width="48" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M357 260c5 48-16 77-56 100l-97 56" fill="none" stroke="#fff" stroke-width="48" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="130" cy="342" r="25" fill="#62a9ff"/>
+    <circle cx="366" cy="189" r="27" fill="#5cdb9a"/>
+    <circle cx="130" cy="342" r="38" fill="#62a9ff" opacity=".18" filter="url(#soft)"/>
+    <circle cx="366" cy="189" r="40" fill="#5cdb9a" opacity=".15" filter="url(#soft)"/>
+  </g>
+</svg>
