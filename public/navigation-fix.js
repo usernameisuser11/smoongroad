@@ -55,8 +55,8 @@
   function replaceHeroIcon() {
     const heroIcon = $('.brand-hero-icon');
     if (!heroIcon) return;
-    heroIcon.src = '/smulink-symbol.svg?v=20260912-symbol-1';
-    heroIcon.alt = 'SMU.Link 연결 심볼';
+    heroIcon.src = '/smulink-symbol.svg?v=20260912-symbol-2';
+    heroIcon.alt = 'SMU.Link 앱 아이콘';
   }
 
   function bindNavigation() {
