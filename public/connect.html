@@ -25,7 +25,14 @@
         <h1>초대 코드 입력</h1>
         <p>보호자가 알려준 6자리 초대 코드를 입력해 주세요.</p>
         <form id="connect-form">
-          <input class="connect-code" id="pair-code" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="000000" aria-label="6자리 연결 코드" />
+          <div class="connect-digits" id="connect-digits" aria-label="6자리 연결 코드">
+            <input class="connect-digit" data-digit="0" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="초대 코드 첫 번째 자리" />
+            <input class="connect-digit" data-digit="1" inputmode="numeric" maxlength="1" aria-label="초대 코드 두 번째 자리" />
+            <input class="connect-digit" data-digit="2" inputmode="numeric" maxlength="1" aria-label="초대 코드 세 번째 자리" />
+            <input class="connect-digit" data-digit="3" inputmode="numeric" maxlength="1" aria-label="초대 코드 네 번째 자리" />
+            <input class="connect-digit" data-digit="4" inputmode="numeric" maxlength="1" aria-label="초대 코드 다섯 번째 자리" />
+            <input class="connect-digit" data-digit="5" inputmode="numeric" maxlength="1" aria-label="초대 코드 여섯 번째 자리" />
+          </div>
           <div id="connect-status" class="connect-status" aria-live="polite"></div>
           <div class="connect-actions">
             <button id="connect-submit" type="submit">연결하기</button>
