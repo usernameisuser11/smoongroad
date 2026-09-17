@@ -13,7 +13,6 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const port = Number(process.env.PORT || 10000);
 const GEMINI_MODEL = String(process.env.GEMINI_MODEL || 'gemini-3.8-flash').trim();
-const isProduction = process.env.NODE_ENV === 'production';
 
 app.set('trust proxy', 1);
 app.disable('x-powered-by');
@@ -169,7 +168,10 @@ app.post('/api/malmoa/ai', async (req,res,next)=>{
 
 app.use(express.static(path.join(__dirname,'public'),{extensions:['html']}));
 app.get(['/guardian','/user','/connect','/settings','/report'],(_req,res)=>res.sendFile(path.join(__dirname,'public','index.html')));
-app.get('*',(_req,res)=>res.sendFile(path.join(__dirname,'public','index.html')));
+app.use((req,res,next)=>{
+  if (req.path.startsWith('/api/')) return next();
+  res.sendFile(path.join(__dirname,'public','index.html'));
+});
 
 app.use((error,_req,res,_next)=>{
   console.error(error);
