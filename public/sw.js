@@ -1,4 +1,4 @@
-const CACHE = 'malmoa-pwa-v3';
+const CACHE = 'malmoa-pwa-v4';
 const PRECACHE = [
   '/',
   '/guardian',
@@ -7,9 +7,15 @@ const PRECACHE = [
   '/user',
   '/connect',
   '/guardian.html',
+  '/settings.html',
+  '/report.html',
   '/user.html',
+  '/connect.html',
   '/style.css',
+  '/pairing.css',
   '/app.js',
+  '/guardian-home.js',
+  '/connect.js',
   '/pwa.js',
   '/guardian.webmanifest',
   '/user.webmanifest',
@@ -36,8 +42,11 @@ self.addEventListener('activate', (event) => {
 });
 
 function shellFor(pathname) {
-  if (pathname.startsWith('/user') || pathname.startsWith('/connect')) return '/user.html';
-  if (pathname.startsWith('/guardian') || pathname.startsWith('/settings') || pathname.startsWith('/report')) return '/guardian.html';
+  if (pathname.startsWith('/connect')) return '/connect.html';
+  if (pathname.startsWith('/user')) return '/user.html';
+  if (pathname.startsWith('/settings')) return '/settings.html';
+  if (pathname.startsWith('/report')) return '/report.html';
+  if (pathname.startsWith('/guardian')) return '/guardian.html';
   return '/';
 }
 
