@@ -1,4 +1,4 @@
-const CACHE = 'malmoa-pwa-v6';
+const CACHE = 'malmoa-pwa-v7';
 const PRECACHE = [
   '/',
   '/guardian',
@@ -32,6 +32,7 @@ const PRECACHE = [
   '/guardian-home.js',
   '/connect.js',
   '/guardian-auth.js',
+  '/settings-extras.js',
   '/pwa.js',
   '/guardian.webmanifest',
   '/user.webmanifest',
