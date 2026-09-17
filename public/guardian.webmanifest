@@ -1,1 +1,22 @@
-{"name":"말모아 보호자","short_name":"말모아 보호자","start_url":"/guardian","display":"standalone","background_color":"#f4f5f8","theme_color":"#149E69","icons":[]}
+{
+  "id": "/pwa/guardian",
+  "name": "말모아 보호자",
+  "short_name": "말모아 보호자",
+  "description": "AAC 사용자 설정과 사용 기록을 관리하는 말모아 보호자 앱",
+  "lang": "ko-KR",
+  "start_url": "/guardian?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "background_color": "#f4f5f8",
+  "theme_color": "#149E69",
+  "orientation": "any",
+  "icons": [
+    {"src":"/icons/guardian-192.png","sizes":"192x192","type":"image/png","purpose":"any"},
+    {"src":"/icons/guardian-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ],
+  "shortcuts": [
+    {"name":"환경 설정","short_name":"설정","url":"/settings"},
+    {"name":"사용 기록","short_name":"기록","url":"/report"}
+  ]
+}
