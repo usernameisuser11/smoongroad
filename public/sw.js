@@ -1,4 +1,4 @@
-const CACHE = 'malmoa-pwa-v11';
+const CACHE = 'malmoa-pwa-v12';
 const PRECACHE = [
   '/',
   '/guardian',
