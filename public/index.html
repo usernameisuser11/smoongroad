@@ -7,16 +7,62 @@
   <meta name="description" content="말모아 AAC 보호자·사용자 앱 선택" />
   <title>말모아</title>
   <link rel="stylesheet" href="/style.css" />
+  <style>
+    .entry-body{min-height:100vh;margin:0;background:linear-gradient(145deg,#f8faf9 0%,#f3f6f5 48%,#eef8f4 100%);color:#171720;display:grid;place-items:center;padding:34px 22px;overflow-x:hidden}
+    .entry-body:before,.entry-body:after{content:"";position:fixed;border-radius:999px;filter:blur(4px);pointer-events:none;z-index:0}
+    .entry-body:before{width:360px;height:360px;background:#dff5eb;right:-120px;top:-150px;opacity:.8}
+    .entry-body:after{width:320px;height:320px;background:#fff1bf;left:-150px;bottom:-170px;opacity:.55}
+    .role-launch{position:relative;z-index:1;width:min(920px,100%);margin:auto;text-align:center}
+    .role-launch__eyebrow{display:inline-flex;align-items:center;gap:8px;padding:8px 13px;border-radius:999px;background:#e7f7f1;color:#127c56;font-size:13px;font-weight:900;margin-bottom:18px}
+    .role-launch__eyebrow:before{content:"";width:8px;height:8px;border-radius:50%;background:#149e69;box-shadow:0 0 0 4px #cceee1}
+    .role-launch__brand{font-size:54px;line-height:1;font-weight:1000;letter-spacing:-.065em;color:#06054f;margin-bottom:22px}
+    .role-launch__brand b{color:#f0c340}
+    .role-launch h1{margin:0;color:#11113d;font-size:clamp(32px,5vw,50px);letter-spacing:-.045em;line-height:1.12}
+    .role-launch>p{margin:18px auto 34px;color:#777886;font-size:16px;line-height:1.75;font-weight:650}
+    .role-launch__cards{display:grid;grid-template-columns:1fr 1fr;gap:18px;text-align:left}
+    .role-card{position:relative;min-height:250px;padding:30px;border-radius:30px;text-decoration:none;color:inherit;background:#fff;border:1px solid #e7e9ed;box-shadow:0 16px 45px rgba(18,30,26,.08);display:flex;flex-direction:column;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;overflow:hidden}
+    .role-card:hover{transform:translateY(-5px);box-shadow:0 22px 55px rgba(18,30,26,.13)}
+    .role-card:focus-visible{outline:4px solid rgba(20,158,105,.22);outline-offset:4px}
+    .role-card__icon{width:66px;height:66px;border-radius:22px;display:grid;place-items:center;font-size:30px;margin-bottom:34px}
+    .guardian-role .role-card__icon{background:#e6f7f1;color:#149e69}
+    .user-role .role-card__icon{background:#fff4cf;color:#9b7400}
+    .role-card .role-tag{position:absolute;right:24px;top:24px;border-radius:999px;padding:7px 11px;font-size:11px;font-weight:900;letter-spacing:.02em}
+    .guardian-role .role-tag{background:#e8f7f1;color:#11805a}
+    .user-role .role-tag{background:#fff4cf;color:#8e6b00}
+    .role-card strong{display:block;font-size:26px;color:#12123f;letter-spacing:-.035em;margin-bottom:8px}
+    .role-card small{display:block;color:#858692;font-size:14px;line-height:1.6;font-weight:650}
+    .role-card__go{margin-top:auto;padding-top:22px;font-size:14px;font-weight:900;display:flex;align-items:center;gap:7px}
+    .guardian-role .role-card__go{color:#149e69}.user-role .role-card__go{color:#9c7700}
+    .role-launch__note{margin-top:22px!important;font-size:13px!important;color:#a0a1aa!important}
+    @media(max-width:680px){.entry-body{padding:26px 16px;align-items:start}.role-launch{padding-top:24px}.role-launch__brand{font-size:44px}.role-launch>p{font-size:14px;margin-bottom:26px}.role-launch__cards{grid-template-columns:1fr;gap:12px}.role-card{min-height:190px;padding:24px;border-radius:24px}.role-card__icon{width:56px;height:56px;border-radius:18px;margin-bottom:24px;font-size:26px}.role-card strong{font-size:23px}}
+  </style>
 </head>
 <body class="entry-body">
   <main class="role-launch">
+    <div class="role-launch__eyebrow">AAC Communication Platform</div>
     <div class="role-launch__brand">Mal<b>Moa</b></div>
     <h1>말모아를 시작해요</h1>
-    <p>이 기기에서 사용할 화면을 선택해 주세요.<br>보호자 앱과 AAC 사용자 앱은 각각 홈 화면에 따로 설치할 수 있어요.</p>
+    <p>이 기기에서 사용할 앱을 선택해 주세요.<br>보호자 앱과 AAC 사용자 앱은 홈 화면에 각각 따로 설치할 수 있어요.</p>
+
     <div class="role-launch__cards">
-      <a href="/guardian" class="role-card guardian-role"><span>보호자</span><strong>보호자용 앱</strong><small>설정 · 연결 · 사용 기록 관리</small></a>
-      <a href="/user" class="role-card user-role"><span>AAC</span><strong>사용자용 앱</strong><small>상징 선택 · AI 변환 · TTS 말하기</small></a>
+      <a href="/guardian" class="role-card guardian-role">
+        <span class="role-tag">GUARDIAN</span>
+        <span class="role-card__icon" aria-hidden="true">♥</span>
+        <strong>보호자용 앱</strong>
+        <small>사용자 설정 · 기기 연결 · 사용 기록을<br>한 곳에서 편하게 관리해요.</small>
+        <span class="role-card__go">보호자 화면 열기 <span aria-hidden="true">→</span></span>
+      </a>
+
+      <a href="/user" class="role-card user-role">
+        <span class="role-tag">AAC USER</span>
+        <span class="role-card__icon" aria-hidden="true">●</span>
+        <strong>사용자용 AAC</strong>
+        <small>상징을 선택하고 AI로 문장을 완성해<br>음성으로 편하게 표현해요.</small>
+        <span class="role-card__go">AAC 화면 열기 <span aria-hidden="true">→</span></span>
+      </a>
     </div>
+
+    <p class="role-launch__note">처음 한 번만 역할을 선택하면 각 앱을 홈 화면에서 바로 실행할 수 있어요.</p>
   </main>
 </body>
 </html>
