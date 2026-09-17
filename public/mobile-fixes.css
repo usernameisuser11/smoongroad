@@ -1,0 +1,192 @@
+/* Mobile layout corrections for M+ build */
+@media (max-width: 720px) {
+  html, body { width:100%; max-width:100%; overflow-x:hidden; }
+  body { padding-left:env(safe-area-inset-left); padding-right:env(safe-area-inset-right); }
+
+  /* AAC: do not float the compose pane over the symbol board on phones. */
+  .user-shell { height:100dvh; min-height:100dvh; overflow:hidden; }
+  .user-head { min-height:58px; height:auto; padding:8px 10px; gap:8px; flex-wrap:nowrap; }
+  .user-head .brand { font-size:22px; flex:0 0 auto; }
+  .user-head .spacer { min-width:0; }
+  .emergency-pill { flex:0 0 auto; padding:10px 15px; font-size:14px; }
+  .user-head .pill { padding:8px 10px; font-size:11px; }
+
+  .aac-layout {
+    flex:1;
+    min-height:0;
+    display:grid;
+    grid-template-columns:58px minmax(0,1fr) !important;
+    grid-template-rows:minmax(0,1fr) auto;
+    overflow:hidden;
+  }
+  .cats {
+    grid-column:1;
+    grid-row:1 / 3;
+    min-height:0;
+    padding:8px 5px;
+    gap:6px;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+  }
+  .cat { min-height:48px; font-size:11px; line-height:1.15; padding:4px 2px; word-break:keep-all; }
+  .symbol-area {
+    grid-column:2;
+    grid-row:1;
+    min-height:0;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    padding:7px 7px 9px;
+  }
+  .symbol-grid { grid-template-columns:repeat(2,minmax(0,1fr)) !important; gap:7px; }
+  .symbol { min-height:116px; padding:8px 5px; font-size:15px; }
+  .symbol .art { width:54px; height:54px; font-size:28px; }
+
+  .side-compose {
+    position:static !important;
+    inset:auto !important;
+    grid-column:2;
+    grid-row:2;
+    width:auto !important;
+    height:auto !important;
+    max-height:154px;
+    min-height:116px;
+    margin:0;
+    padding:7px 8px 8px;
+    border:0;
+    border-top:1px solid var(--line);
+    border-radius:0 !important;
+    box-shadow:none !important;
+    background:#fff;
+    display:grid;
+    grid-template-rows:minmax(58px,1fr) 46px;
+    gap:7px;
+    overflow:hidden;
+    z-index:auto;
+  }
+  .side-compose .empty {
+    height:auto !important;
+    min-height:58px;
+    border-radius:10px;
+    font-size:12px;
+  }
+  .selected-box {
+    min-height:58px;
+    max-height:82px;
+    padding:6px;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:5px;
+    border-radius:10px;
+    overflow-y:auto;
+  }
+  .mini-token { min-height:42px; grid-template-columns:30px 1fr; padding:3px; font-size:10px; }
+  .mini-token span { width:26px; height:26px; }
+  .action-row {
+    margin-top:0 !important;
+    display:grid;
+    grid-template-columns:46px minmax(0,1fr) minmax(0,1fr);
+    gap:6px;
+    min-height:46px;
+  }
+  .action-row button { height:46px; min-width:0; padding:0 5px; border-radius:9px; font-size:12px; line-height:1.15; overflow:hidden; }
+  .action-row button small { font-size:9px; }
+
+  /* Guardian-only explanatory blocks make the mobile composer too tall. */
+  .side-compose > div[style*="margin-top:6px"] { display:none !important; }
+  .side-compose > div[style*="margin-top:auto"] { display:none !important; }
+
+  .quick {
+    height:52px;
+    min-height:52px;
+    padding:5px 6px calc(5px + env(safe-area-inset-bottom));
+    gap:4px;
+  }
+  .quick button { font-size:11px; padding:0 2px; white-space:nowrap; }
+
+  /* Generic modal sizing on iPhone. */
+  .modal-bg {
+    padding:12px 10px calc(12px + env(safe-area-inset-bottom));
+    align-items:center;
+    overflow-y:auto;
+  }
+  .modal {
+    width:min(94vw,560px) !important;
+    max-width:94vw;
+    max-height:calc(100dvh - 28px);
+    padding:20px 16px 18px !important;
+    border-radius:22px !important;
+    overflow-y:auto;
+    overflow-x:hidden;
+  }
+  .modal h2 { font-size:22px; margin-bottom:14px; }
+  .modal p { word-break:keep-all; overflow-wrap:break-word; }
+  .modal .row { grid-template-columns:1fr !important; }
+  .modal-actions { grid-template-columns:1fr !important; gap:8px; margin-top:16px; }
+  .modal-actions button { height:48px; }
+
+  /* Pairing modal currently uses inline desktop grid styles. Override them. */
+  .modal > div[style*="grid-template-columns:minmax(0,1fr) 230px"] {
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    gap:14px !important;
+    align-items:start !important;
+  }
+  .modal > div[style*="grid-template-columns:minmax(0,1fr) 230px"] > div:first-child {
+    min-width:0;
+    width:100%;
+  }
+  .modal > div[style*="grid-template-columns:minmax(0,1fr) 230px"] > div:first-child > p {
+    margin:0 0 12px;
+    font-size:13px;
+    line-height:1.6 !important;
+    white-space:normal !important;
+    word-break:keep-all !important;
+    overflow-wrap:break-word !important;
+  }
+  .modal div[style*="display:flex;gap:7px;margin:18px 0"] {
+    display:grid !important;
+    grid-template-columns:repeat(6,minmax(0,1fr)) !important;
+    gap:5px !important;
+    margin:10px 0 !important;
+    width:100%;
+  }
+  .modal div[style*="display:flex;gap:7px;margin:18px 0"] > b {
+    width:100% !important;
+    min-width:0 !important;
+    height:48px !important;
+    border-radius:10px !important;
+    font-size:22px !important;
+  }
+  .modal img[alt="연결 QR"] {
+    display:block;
+    width:min(176px,52vw) !important;
+    height:auto !important;
+    aspect-ratio:1;
+    margin:0 auto;
+  }
+  .modal div[style*="display:flex;gap:8px;flex-wrap:wrap"] {
+    display:grid !important;
+    grid-template-columns:1fr 1fr !important;
+    width:100%;
+    gap:7px !important;
+    margin-top:12px !important;
+  }
+  .modal div[style*="display:flex;gap:8px;flex-wrap:wrap"] .pill {
+    width:100%;
+    min-height:42px;
+    padding:8px 6px;
+    font-size:11px;
+  }
+  .modal div[style*="display:flex;gap:8px;flex-wrap:wrap"] .pill:last-child { grid-column:1 / -1; }
+
+  /* Guardian edit strip should wrap instead of pushing content sideways. */
+  .guardian-mode-strip { height:auto; min-height:42px; padding:6px 8px; flex-wrap:wrap; line-height:1.35; }
+}
+
+@media (max-width: 390px) {
+  .aac-layout { grid-template-columns:54px minmax(0,1fr) !important; }
+  .cat { font-size:10px; }
+  .symbol { min-height:108px; font-size:14px; }
+  .symbol .art { width:48px; height:48px; }
+  .selected-box { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .quick button { font-size:10px; }
+}
