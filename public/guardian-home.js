@@ -1,81 +1,30 @@
-const app = document.querySelector('#app');
-const toast = document.querySelector('#toast');
-let pairing = null;
-
-function showToast(message){
-  if(!toast) return;
-  toast.textContent = message;
-  toast.hidden = false;
-  clearTimeout(showToast.t);
-  showToast.t = setTimeout(()=>toast.hidden = true, 2200);
+const app=document.querySelector('#app');const toast=document.querySelector('#toast');
+let data=null,pairing=null,category='추천',selected=[],editMode=false;
+const cats=['추천','최근','즐겨찾기','긴급어','사람','음식','장소','신체','행동','감정','설명','대화','문법'];
+function esc(v){return String(v??'').replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[m]))}
+function showToast(m){if(!toast)return;toast.textContent=m;toast.hidden=false;clearTimeout(showToast.t);showToast.t=setTimeout(()=>toast.hidden=true,2200)}
+async function api(url,o={}){const r=await fetch(url,{headers:{'content-type':'application/json',...(o.headers||{})},...o});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'요청에 실패했습니다.');return d}
+function brand(){return `<span class="brand">Mal<b>Moa</b></span>`}
+function visibleSymbols(){const list=data?.symbols||[];if(category==='최근')return list.slice(0,12);if(category==='즐겨찾기')return list.filter(x=>x.favorite);if(category==='추천')return list;return list.filter(x=>x.category===category)}
+function card(x){return `<button class="symbol ${selected.some(s=>+s.id===+x.id)?'selected':''}" style="--card:${x.color||'#82D8E9'}" data-symbol="${x.id}"><span class="star" data-star="${x.id}">${x.favorite?'★':'☆'}</span><span class="art">${x.emoji||'×'}</span><span>${esc(x.label)}</span></button>`}
+function render(){
+ const u=data?.user||{name:'사용자'},s=data?.settings||{},cols=Number(s.grid_size)||4,current=visibleSymbols();
+ app.innerHTML=`<div class="user-shell"><header class="user-head">${brand()}<a class="active" href="/guardian">홈</a><a href="/settings">설정</a><a href="/report">사용 기록</a><div class="spacer"></div><span style="font-size:12px;font-weight:800;color:#149E69">● ${esc(u.name||'사용자')} 안정</span><button class="pill green" id="pair-open">기기 연결</button><button class="${editMode?'ai':'reset'}" id="edit-toggle" style="height:36px;border-radius:999px;border:0;padding:0 14px;font-weight:900">${editMode?'편집 모드 ON':'보호자 편집'}</button></header>${editMode?'<div class="guardian-mode-strip">보호자 편집 모드 · 카드를 누르면 내용을 수정할 수 있어요 <button id="add-card">＋ 카드 추가</button></div>':''}<div class="aac-layout"><aside class="cats">${cats.map(c=>`<button class="cat ${category===c?'active':''}" data-cat="${c}">${c}</button>`).join('')}</aside><main class="symbol-area"><div class="symbol-grid" style="--grid-cols:${cols};--grid-cols-mobile:${Math.min(cols,3)}">${current.map(card).join('')}</div></main><aside class="side-compose">${selected.length?`<div class="selected-box">${selected.map(x=>`<div class="mini-token"><span>${x.emoji||'×'}</span>${esc(x.label)}</div>`).join('')}</div>`:'<div class="empty">사용자 AAC를 실시간으로 확인해요</div>'}<div style="margin-top:auto;display:grid;gap:8px"><a href="/settings" style="height:46px;border-radius:10px;background:#E7F7F1;color:#149E69;display:grid;place-items:center;text-decoration:none;font-weight:900">환경 설정</a><a href="/report" style="height:46px;border-radius:10px;background:#F1F2F5;color:#60606B;display:grid;place-items:center;text-decoration:none;font-weight:900">사용 기록</a></div></aside></div><footer class="quick">${['네','아니요','잠깐만요','몰라요','뭐예요'].map(t=>`<button>${t}</button>`).join('')}</footer></div>`;
+ bind()
 }
-
-async function api(url, options={}){
-  const response = await fetch(url,{headers:{'content-type':'application/json',...(options.headers||{})},...options});
-  const data = await response.json().catch(()=>({}));
-  if(!response.ok) throw new Error(data.error || '요청에 실패했습니다.');
-  return data;
-}
-
-function digits(value){ return String(value || '').replace(/\D/g,'').slice(0,6); }
-function esc(value){ return String(value ?? '').replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[m])); }
-
-function pairingView(){
-  if(!pairing){
-    return `<div class="pairing-empty"><div class="pairing-empty-icon">⌁</div><h2>사용자 기기를 연결해 주세요</h2><p>연결 코드는 10분 동안 사용할 수 있어요. 사용자 폰에서 QR을 스캔하거나 6자리 코드를 입력하면 됩니다.</p><button class="pairing-primary" id="make-pairing">연결 코드 만들기</button></div>`;
-  }
-  const code = digits(pairing.code);
-  const connectUrl = `${location.origin}/connect?code=${encodeURIComponent(code)}`;
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&data=${encodeURIComponent(connectUrl)}`;
-  const expires = pairing.expires_at ? new Date(pairing.expires_at).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}) : '';
-  return `<div class="pairing-live"><div class="pairing-copy"><span class="pairing-kicker">사용자 기기 연결</span><h2>QR을 스캔하거나<br>코드를 입력해 주세요</h2><p>사용자 폰 기본 카메라로 QR을 비추면 연결 화면이 바로 열립니다.</p><div class="pairing-code" aria-label="연결 코드">${code.split('').map(n=>`<b>${n}</b>`).join('')}</div><div class="pairing-actions"><button class="pairing-primary" id="copy-code">코드 복사</button><button class="pairing-secondary" id="share-pairing">연결 링크 공유</button><button class="pairing-secondary" id="refresh-pairing">새 코드 발급</button></div><small>${expires ? `${expires}까지 유효 · ` : ''}한 번 연결하면 이 코드는 다시 사용할 수 없어요.</small></div><div class="pairing-qr-wrap"><div class="pairing-qr"><img src="${qrUrl}" alt="사용자 기기 연결 QR 코드"></div><strong>사용자 폰으로 스캔</strong><span>말모아 AAC 연결 화면으로 이동합니다.</span></div></div>`;
-}
-
-function render(data){
-  const guardianName = esc(data?.guardian?.name || '보호자');
-  app.innerHTML = `<div class="guardian-shell"><header class="guardian-topbar"><a class="brand" href="/guardian">Mal<b>Moa</b></a><nav><a class="active" href="/guardian">홈</a><a href="/settings">설정</a><a href="/report">사용 기록</a></nav><div class="spacer"></div><a class="user-link" href="/user">사용자 화면</a></header><main class="guardian-home"><section class="guardian-hero"><div><span>GUARDIAN</span><h1>${guardianName}님,<br>사용자와 말모아를 연결해요</h1><p>보호자 설정은 연결된 AAC 사용자 기기에 반영되고, 사용 기록도 이곳에서 확인할 수 있어요.</p></div><a class="settings-link" href="/settings">환경 설정 열기 →</a></section><section class="pairing-panel">${pairingView()}</section><div class="guardian-cards"><a class="guardian-card" href="/settings"><i>⚙</i><div><strong>사용자 환경 설정</strong><small>격자 크기 · TTS 음성 · 루틴 관리</small></div><span>→</span></a><a class="guardian-card" href="/report"><i>▥</i><div><strong>사용 기록 확인</strong><small>AAC 발화 기록과 긴급 사용 확인</small></div><span>→</span></a></div></main></div>`;
-  bind();
-}
-
-async function createPairing(data){
-  const button = document.querySelector('#make-pairing') || document.querySelector('#refresh-pairing');
-  if(button){ button.disabled = true; button.textContent = '코드 만드는 중...'; }
-  try{
-    pairing = await api('/api/malmoa/pairings',{method:'POST',body:'{}'});
-    render(data);
-  }catch(error){
-    if(button) button.disabled = false;
-    showToast(error.message || '연결 코드를 만들지 못했습니다.');
-  }
-}
-
 function bind(){
-  const currentData = window.__malmoaGuardianData;
-  document.querySelector('#make-pairing')?.addEventListener('click',()=>createPairing(currentData));
-  document.querySelector('#refresh-pairing')?.addEventListener('click',()=>createPairing(currentData));
-  document.querySelector('#copy-code')?.addEventListener('click',async()=>{
-    const code = digits(pairing?.code);
-    try{ await navigator.clipboard.writeText(code); showToast('연결 코드를 복사했습니다.'); }
-    catch{ showToast(`연결 코드: ${code}`); }
-  });
-  document.querySelector('#share-pairing')?.addEventListener('click',async()=>{
-    const code = digits(pairing?.code);
-    const url = `${location.origin}/connect?code=${encodeURIComponent(code)}`;
-    if(navigator.share){
-      try{ await navigator.share({title:'말모아 사용자 기기 연결',text:`말모아 연결 코드 ${code}`,url}); return; }
-      catch(error){ if(error?.name === 'AbortError') return; }
-    }
-    try{ await navigator.clipboard.writeText(url); showToast('연결 링크를 복사했습니다.'); }
-    catch{ showToast(`연결 코드: ${code}`); }
-  });
+ document.querySelectorAll('[data-cat]').forEach(b=>b.onclick=()=>{category=b.dataset.cat;render()});
+ document.querySelectorAll('[data-star]').forEach(b=>b.onclick=async e=>{e.stopPropagation();const x=data.symbols.find(v=>+v.id===+b.dataset.star);x.favorite=!x.favorite;try{await api(`/api/malmoa/symbols/${x.id}`,{method:'PATCH',body:JSON.stringify({favorite:x.favorite})})}catch{}render()});
+ document.querySelectorAll('[data-symbol]').forEach(b=>b.onclick=()=>{const x=data.symbols.find(v=>+v.id===+b.dataset.symbol);if(editMode)return editCard(x);if(selected.some(v=>+v.id===+x.id))selected=selected.filter(v=>+v.id!==+x.id);else if(selected.length<8)selected.push(x);render()});
+ document.querySelector('#edit-toggle').onclick=()=>{editMode=!editMode;selected=[];render()};
+ document.querySelector('#pair-open').onclick=pairingModal;
+ document.querySelector('#add-card')?.addEventListener('click',addCardModal)
 }
-
-(async()=>{
-  try{
-    const data = await api('/api/malmoa/bootstrap');
-    window.__malmoaGuardianData = data;
-    render(data);
-  }catch(error){
-    app.innerHTML = `<main class="connect-page"><section class="connect-card"><div class="connect-brand">Mal<b>Moa</b></div><h1>연결 정보를 불러오지 못했어요</h1><p>${esc(error.message)}</p><div class="connect-actions"><button onclick="location.reload()">다시 시도</button></div></section></main>`;
-  }
-})();
+async function pairingModal(){
+ const layer=document.createElement('div');layer.className='modal-bg';layer.innerHTML=`<section class="modal"><h2>사용자 연결 관리</h2><p style="color:#92929D;line-height:1.7">사용자 폰에서 6자리 코드를 입력하거나 QR을 스캔하면 같은 AAC 프로필로 연결돼요.</p><div class="ai-loading"><div class="spinner"></div>연결 코드를 만드는 중...</div></section>`;document.body.append(layer);
+ try{pairing=await api('/api/malmoa/pairings',{method:'POST',body:'{}'});showPairing(layer)}catch(e){layer.innerHTML=`<section class="modal"><h2>사용자 연결 관리</h2><p>연결 코드를 만들지 못했어요.</p><div class="modal-actions"><button class="primary" onclick="location.reload()">다시 시도</button><button id="pair-close">닫기</button></div></section>`;document.querySelector('#pair-close',layer).onclick=()=>layer.remove()}
+}
+function showPairing(layer){const code=String(pairing.code||'').replace(/\D/g,'').slice(0,6),url=`${location.origin}/connect?code=${code}`,qr=`https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&data=${encodeURIComponent(url)}`,exp=new Date(pairing.expires_at).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});layer.innerHTML=`<section class="modal"><h2>사용자 연결 관리</h2><div style="display:grid;grid-template-columns:1fr 230px;gap:24px;align-items:center"><div><p style="color:#92929D">QR을 스캔하거나 아래 6자리 코드를 사용자 폰에 입력해 주세요.</p><div style="display:flex;gap:7px;margin:18px 0">${code.split('').map(n=>`<b style="width:48px;height:58px;background:#F2F3F6;border-radius:12px;display:grid;place-items:center;font-size:28px;color:#06054F">${n}</b>`).join('')}</div><small style="color:#999">${exp}까지 유효 · 1회 사용</small></div><div style="text-align:center"><img src="${qr}" alt="연결 QR" style="width:210px;height:210px;border-radius:12px"><small style="display:block;color:#999">사용자 폰으로 스캔</small></div></div><div class="modal-actions"><button class="primary" id="pair-copy">코드 복사</button><button id="pair-close">닫기</button></div></section>`;document.querySelector('#pair-close',layer).onclick=()=>layer.remove();document.querySelector('#pair-copy',layer).onclick=async()=>{try{await navigator.clipboard.writeText(code);showToast('연결 코드를 복사했습니다.')}catch{showToast(code)}}}
+function editCard(x){const layer=document.createElement('div');layer.className='modal-bg';layer.innerHTML=`<section class="modal"><h2>카드 편집</h2><div class="row"><div><label style="font-weight:800">카드 텍스트</label><input id="edit-label" value="${esc(x.label)}"></div><div><label style="font-weight:800">카테고리</label><select id="edit-cat">${cats.filter(c=>!['추천','최근','즐겨찾기'].includes(c)).map(c=>`<option ${x.category===c?'selected':''}>${c}</option>`).join('')}</select></div></div><label style="display:flex;gap:8px;align-items:center;margin-top:18px;font-weight:800"><input id="edit-fav" type="checkbox" ${x.favorite?'checked':''}> 즐겨찾기에 표시</label><label style="display:block;margin-top:18px;font-weight:800">이미지 변경 <small style="color:#999">(현재는 이 기기 미리보기)</small></label><input id="edit-image" type="file" accept="image/*"><div class="modal-actions"><button class="primary" id="edit-save">저장</button><button id="edit-close">취소</button></div></section>`;document.body.append(layer);document.querySelector('#edit-close',layer).onclick=()=>layer.remove();document.querySelector('#edit-save',layer).onclick=async()=>{const label=document.querySelector('#edit-label',layer).value.trim();x.label=label||x.label;x.category=document.querySelector('#edit-cat',layer).value;x.favorite=document.querySelector('#edit-fav',layer).checked;try{await api(`/api/malmoa/symbols/${x.id}`,{method:'PATCH',body:JSON.stringify({label:x.label,favorite:x.favorite})});showToast('카드 설정을 저장했습니다.')}catch{showToast('일부 설정은 이 기기에만 반영됐어요.')}layer.remove();render()}}
+function addCardModal(){const layer=document.createElement('div');layer.className='modal-bg';layer.innerHTML=`<section class="modal"><h2>카드 추가</h2><div class="row"><input id="new-label" placeholder="표시할 단어"><select id="new-cat">${cats.filter(c=>!['추천','최근','즐겨찾기'].includes(c)).map(c=>`<option>${c}</option>`).join('')}</select></div><p style="color:#999">현재 백엔드에 카드 생성 API가 없어 이 버전에서는 기기 내 미리보기로 추가돼요.</p><div class="modal-actions"><button class="primary" id="new-save">추가</button><button id="new-close">취소</button></div></section>`;document.body.append(layer);document.querySelector('#new-close',layer).onclick=()=>layer.remove();document.querySelector('#new-save',layer).onclick=()=>{const label=document.querySelector('#new-label',layer).value.trim();if(!label)return;data.symbols.push({id:`local-${Date.now()}`,label,category:document.querySelector('#new-cat',layer).value,emoji:'＋',color:'#DFF6EA',favorite:false});layer.remove();render();showToast('카드를 미리보기로 추가했습니다.')}}
+(async()=>{try{data=await api('/api/malmoa/bootstrap');render()}catch(e){app.innerHTML=`<main class="welcome"><div class="welcome-card">${brand()}<h1>정보를 불러오지 못했어요</h1><p>${esc(e.message)}</p><div class="welcome-actions"><button class="primary" onclick="location.reload()">다시 시도</button></div></div></main>`}})();
