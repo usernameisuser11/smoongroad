@@ -1,52 +1,12 @@
-const form = document.querySelector('#connect-form');
-const input = document.querySelector('#pair-code');
-const status = document.querySelector('#connect-status');
-const submit = document.querySelector('#connect-submit');
-
-function digits(value){ return String(value || '').replace(/\D/g,'').slice(0,6); }
-function setStatus(message, ok=false){
-  status.textContent = message;
-  status.classList.toggle('success', ok);
-}
-async function api(url, options={}){
-  const response = await fetch(url,{headers:{'content-type':'application/json',...(options.headers||{})},...options});
-  const data = await response.json().catch(()=>({}));
-  if(!response.ok) throw new Error(data.error || '요청에 실패했습니다.');
-  return data;
-}
-
-const fromQr = digits(new URLSearchParams(location.search).get('code'));
-if(fromQr){
-  input.value = fromQr;
-  setStatus('QR에서 연결 코드를 확인했어요. 연결하기를 눌러 주세요.', true);
-}
-
-input.addEventListener('input',()=>{
-  input.value = digits(input.value);
-  setStatus('');
-});
-
-form.addEventListener('submit',async event=>{
-  event.preventDefault();
-  const code = digits(input.value);
-  if(code.length !== 6){
-    setStatus('6자리 연결 코드를 입력해 주세요.');
-    input.focus();
-    return;
-  }
-  submit.disabled = true;
-  submit.textContent = '연결 중...';
-  setStatus('보호자와 연결하고 있어요...');
-  try{
-    const result = await api('/api/malmoa/pairings/claim',{method:'POST',body:JSON.stringify({code})});
-    localStorage.setItem('malmoa-user-paired','1');
-    if(result.user_profile_id) localStorage.setItem('malmoa-user-profile-id',String(result.user_profile_id));
-    setStatus('연결되었습니다. AAC 화면을 여는 중이에요.', true);
-    setTimeout(()=>location.replace('/user'),650);
-  }catch(error){
-    submit.disabled = false;
-    submit.textContent = '연결하기';
-    const known = String(error.message || '');
-    setStatus(known.includes('INVALID') ? '코드가 만료되었거나 이미 사용되었습니다. 보호자에게 새 코드를 받아 주세요.' : '연결하지 못했습니다. 잠시 후 다시 시도해 주세요.');
-  }
-});
+const form=document.querySelector('#connect-form');const input=document.querySelector('#pair-code');const status=document.querySelector('#connect-status');const submit=document.querySelector('#connect-submit');const codeView=document.querySelector('#code-view');const qrView=document.querySelector('#qr-view');const video=document.querySelector('#qr-video');const qrMessage=document.querySelector('#qr-message');let stream=null,scanning=false;
+function digits(v){return String(v||'').replace(/\D/g,'').slice(0,6)}function setStatus(m,ok=false){status.textContent=m;status.classList.toggle('success',ok)}
+async function api(url,o={}){const r=await fetch(url,{headers:{'content-type':'application/json',...(o.headers||{})},...o});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'요청에 실패했습니다.');return d}
+function stopCamera(){scanning=false;if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}if(video)video.srcObject=null}
+function showCode(code=''){stopCamera();qrView.hidden=true;codeView.hidden=false;if(code){input.value=digits(code);setStatus('QR에서 연결 코드를 확인했어요. 연결하기를 눌러 주세요.',true);input.focus()}}
+async function showQr(){codeView.hidden=true;qrView.hidden=false;setStatus('');await startCamera()}
+function codeFromRaw(raw){try{const u=new URL(raw,location.origin);const c=digits(u.searchParams.get('code'));if(c.length===6)return c}catch{}const c=digits(raw);return c.length===6?c:''}
+async function startCamera(){stopCamera();qrMessage.textContent='카메라를 준비하고 있어요...';if(!navigator.mediaDevices?.getUserMedia){qrMessage.textContent='이 브라우저에서는 카메라 스캔을 지원하지 않아요. 초대 코드를 직접 입력해 주세요.';return}if(!('BarcodeDetector'in window)){qrMessage.textContent='QR 자동 인식이 지원되지 않아요. 기본 카메라 앱으로 QR을 열거나 초대 코드를 입력해 주세요.';return}try{const supported=await BarcodeDetector.getSupportedFormats();if(!supported.includes('qr_code')){qrMessage.textContent='QR 자동 인식이 지원되지 않아요. 초대 코드를 직접 입력해 주세요.';return}stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});video.srcObject=stream;await video.play();qrMessage.textContent='QR 코드를 화면 안에 맞춰 주세요.';scanning=true;const detector=new BarcodeDetector({formats:['qr_code']});const scan=async()=>{if(!scanning)return;try{const codes=await detector.detect(video);const found=codes.map(x=>codeFromRaw(x.rawValue)).find(x=>x.length===6);if(found){showCode(found);return}}catch{}requestAnimationFrame(scan)};requestAnimationFrame(scan)}catch(e){qrMessage.textContent='카메라를 사용할 수 없어요. 카메라 권한을 허용하거나 초대 코드를 직접 입력해 주세요.'}}
+const params=new URLSearchParams(location.search);const fromQr=digits(params.get('code'));if(fromQr){showCode(fromQr)}else if(params.get('mode')==='qr'){showQr()}
+document.querySelector('#open-qr').addEventListener('click',showQr);document.querySelector('#qr-to-code').addEventListener('click',()=>showCode());window.addEventListener('pagehide',stopCamera);
+input.addEventListener('input',()=>{input.value=digits(input.value);setStatus('')});
+form.addEventListener('submit',async e=>{e.preventDefault();const code=digits(input.value);if(code.length!==6){setStatus('6자리 초대 코드를 입력해 주세요.');input.focus();return}submit.disabled=true;submit.textContent='연결 중...';setStatus('보호자와 연결하고 있어요...');try{const result=await api('/api/malmoa/pairings/claim',{method:'POST',body:JSON.stringify({code})});localStorage.setItem('malmoa-user-paired','1');if(result.user_profile_id)localStorage.setItem('malmoa-user-profile-id',String(result.user_profile_id));setStatus('연결되었습니다. AAC 화면을 여는 중이에요.',true);setTimeout(()=>location.replace('/user'),650)}catch(error){submit.disabled=false;submit.textContent='연결하기';const known=String(error.message||'');setStatus(known.includes('INVALID')?'코드가 만료되었거나 이미 사용되었습니다. 보호자에게 새 코드를 받아 주세요.':'연결하지 못했습니다. 잠시 후 다시 시도해 주세요.')}});
