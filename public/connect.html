@@ -19,18 +19,34 @@
   <main class="connect-page">
     <section class="connect-card">
       <div class="connect-brand">Mal<b>Moa</b></div>
-      <span class="connect-kicker">기기 연결</span>
-      <h1>보호자와 말모아 연결</h1>
-      <p>보호자 화면의 QR을 스캔했거나 전달받은 6자리 코드를 입력해 주세요.</p>
-      <form id="connect-form">
-        <input class="connect-code" id="pair-code" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="000000" aria-label="6자리 연결 코드" />
-        <div id="connect-status" class="connect-status" aria-live="polite"></div>
-        <div class="connect-actions">
-          <button id="connect-submit" type="submit">연결하기</button>
-          <a href="/user">나중에 하기</a>
+      <button class="connect-back" type="button" onclick="location.href='/user'" aria-label="뒤로">‹</button>
+      <div id="code-view">
+        <span class="connect-kicker">사용자 연결</span>
+        <h1>초대 코드 입력</h1>
+        <p>보호자가 알려준 6자리 초대 코드를 입력해 주세요.</p>
+        <form id="connect-form">
+          <input class="connect-code" id="pair-code" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="000000" aria-label="6자리 연결 코드" />
+          <div id="connect-status" class="connect-status" aria-live="polite"></div>
+          <div class="connect-actions">
+            <button id="connect-submit" type="submit">연결하기</button>
+            <button class="connect-alt" id="open-qr" type="button">QR로 스캔하기</button>
+          </div>
+        </form>
+      </div>
+      <div id="qr-view" hidden>
+        <span class="connect-kicker">사용자 연결</span>
+        <h1>QR 스캔</h1>
+        <p>보호자 화면의 QR 코드를 카메라 안에 맞춰 주세요.</p>
+        <div class="qr-camera-wrap">
+          <video id="qr-video" playsinline muted></video>
+          <div class="qr-frame"><i></i><i></i><i></i><i></i></div>
+          <div id="qr-message">카메라를 준비하고 있어요...</div>
         </div>
-      </form>
-      <small class="connect-note">연결 후 보호자가 변경한 AAC 설정과 사용 기록이 같은 사용자 프로필로 동기화됩니다.</small>
+        <div class="connect-actions">
+          <button class="connect-alt" id="qr-to-code" type="button">초대 코드 직접 입력</button>
+        </div>
+      </div>
+      <small class="connect-note">연결이 완료되면 보호자가 설정한 AAC 화면이 자동으로 동기화돼요.</small>
     </section>
   </main>
   <script type="module" src="/connect.js"></script>
