@@ -4,14 +4,19 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#149E69" />
-  <meta name="description" content="말모아 AAC 보호자·사용자 PWA" />
+  <meta name="description" content="말모아 AAC 보호자·사용자 앱 선택" />
   <title>말모아</title>
-  <link id="manifest-link" rel="manifest" href="/guardian.webmanifest" />
   <link rel="stylesheet" href="/style.css" />
 </head>
-<body>
-  <div id="app" aria-live="polite"></div>
-  <div id="toast" class="toast" hidden></div>
-  <script type="module" src="/app.js"></script>
+<body class="entry-body">
+  <main class="role-launch">
+    <div class="role-launch__brand">Mal<b>Moa</b></div>
+    <h1>말모아를 시작해요</h1>
+    <p>이 기기에서 사용할 화면을 선택해 주세요.<br>보호자 앱과 AAC 사용자 앱은 각각 홈 화면에 따로 설치할 수 있어요.</p>
+    <div class="role-launch__cards">
+      <a href="/guardian" class="role-card guardian-role"><span>보호자</span><strong>보호자용 앱</strong><small>설정 · 연결 · 사용 기록 관리</small></a>
+      <a href="/user" class="role-card user-role"><span>AAC</span><strong>사용자용 앱</strong><small>상징 선택 · AI 변환 · TTS 말하기</small></a>
+    </div>
+  </main>
 </body>
 </html>
