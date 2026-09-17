@@ -167,7 +167,13 @@ app.post('/api/malmoa/ai', async (req,res,next)=>{
 });
 
 app.use(express.static(path.join(__dirname,'public'),{extensions:['html']}));
-app.get(['/guardian','/user','/connect','/settings','/report'],(_req,res)=>res.sendFile(path.join(__dirname,'public','index.html')));
+
+app.get(['/guardian','/settings','/report'],(_req,res)=>{
+  res.sendFile(path.join(__dirname,'public','guardian.html'));
+});
+app.get(['/user','/connect'],(_req,res)=>{
+  res.sendFile(path.join(__dirname,'public','user.html'));
+});
 app.use((req,res,next)=>{
   if (req.path.startsWith('/api/')) return next();
   res.sendFile(path.join(__dirname,'public','index.html'));
