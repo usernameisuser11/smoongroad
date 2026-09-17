@@ -54,6 +54,7 @@ export async function initDatabase() {
       label TEXT NOT NULL,
       emoji TEXT NOT NULL DEFAULT '💬',
       color TEXT NOT NULL DEFAULT '#AEE6F2',
+      image_data TEXT NOT NULL DEFAULT '',
       favorite BOOLEAN NOT NULL DEFAULT FALSE,
       emergency BOOLEAN NOT NULL DEFAULT FALSE,
       sort_order INTEGER NOT NULL DEFAULT 0,
@@ -91,6 +92,7 @@ export async function initDatabase() {
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
   `);
+  await query("ALTER TABLE malmoa_symbols ADD COLUMN IF NOT EXISTS image_data TEXT NOT NULL DEFAULT ''");
 
   const profileCount = await query('SELECT COUNT(*)::int AS count FROM malmoa_profiles');
   if (profileCount.rows[0].count === 0) {
