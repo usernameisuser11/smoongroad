@@ -1,21 +1,37 @@
-const CACHE = 'malmoa-pwa-v5';
+const CACHE = 'malmoa-pwa-v6';
 const PRECACHE = [
   '/',
   '/guardian',
+  '/guardian/start',
+  '/guardian/login',
+  '/guardian/signup',
+  '/guardian/onboarding/profile',
+  '/guardian/onboarding/display',
+  '/guardian/onboarding/tts',
+  '/guardian/onboarding/review',
   '/settings',
   '/report',
   '/user',
   '/connect',
   '/guardian.html',
+  '/guardian/start.html',
+  '/guardian/login.html',
+  '/guardian/signup.html',
+  '/guardian/onboarding/profile.html',
+  '/guardian/onboarding/display.html',
+  '/guardian/onboarding/tts.html',
+  '/guardian/onboarding/review.html',
   '/settings.html',
   '/report.html',
   '/user.html',
   '/connect.html',
   '/style.css',
   '/pairing.css',
+  '/guardian-auth.css',
   '/app.js',
   '/guardian-home.js',
   '/connect.js',
+  '/guardian-auth.js',
   '/pwa.js',
   '/guardian.webmanifest',
   '/user.webmanifest',
@@ -42,6 +58,13 @@ self.addEventListener('activate', (event) => {
 });
 
 function shellFor(pathname) {
+  if (pathname.startsWith('/guardian/onboarding/')) {
+    const name = pathname.split('/').pop();
+    return `/guardian/onboarding/${name}.html`;
+  }
+  if (pathname === '/guardian/start') return '/guardian/start.html';
+  if (pathname === '/guardian/login') return '/guardian/login.html';
+  if (pathname === '/guardian/signup') return '/guardian/signup.html';
   if (pathname.startsWith('/connect')) return '/connect.html';
   if (pathname.startsWith('/user')) return '/user.html';
   if (pathname.startsWith('/settings')) return '/settings.html';
